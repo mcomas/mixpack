@@ -19,14 +19,14 @@ rmixmod_rmixnorm = function(n, mixmod_solution){
            func_sigma)
 }
 
-rmixnorm = function(n, Pi, Mu, S, labels=F, ...){
+rmixnorm = function(n, Pi, Mu, S, labels=F){
   z = sample(x=1:length(Pi), size=n, prob=Pi, replace=T)
   rmn = matrix(0, nrow=n, ncol=nrow(Mu))
   for(i in 1:length(Pi)){
     n_z = sum(z==i)
     if(n_z!=0){
       if(ncol(Mu)==1)
-        rmn[z==i,] = rnorm(n_z, mean=Mu[,i], sd=S[,,i])
+        rmn[z==i,] = rnorm(n_z, mean=Mu[,i], sd=sqrt(S[,,i]))
       else
         rmn[z==i,] = rmvnorm(n_z, mean=Mu[,i], sigma=S[,,i])
     }
@@ -34,6 +34,23 @@ rmixnorm = function(n, Pi, Mu, S, labels=F, ...){
   if(labels)
     rmn = cbind(rmn, z)
   rmn
+}
+
+dmixnorm = function(x, Pi, Mu, S, part = 1:length(Pi)){
+  #z = sample(x=1:length(Pi), size=n, prob=Pi, replace=T)
+  #rmn = matrix(0, nrow=n, ncol=nrow(Mu))
+  if(is.vector(x)){
+    dmn = 0
+  }else{
+    dmn = rep(0, times=nrow(x))
+  }
+  for(i in part){
+    if(ncol(Mu)==1)
+      dmn = dmn + Pi[i] * dnorm(x, mean=Mu[,i], sd=sqrt(S[,,i]))
+    else
+      dmn = dmn + Pi[i] * dmvnorm(x, mean=Mu[,i], sigma=S[,,i])
+  }
+  dmn / sum(Pi[part])
 }
 
 get_order = function(fittedMean, fittedVariance, mainMean, mainVariance){
