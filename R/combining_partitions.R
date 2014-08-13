@@ -35,8 +35,6 @@ b_absorbes_a = function(partition, partA, partB){
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 #' are classes to be combined.
 #' 
-#' @examples 
-#' 
 get_hierarchical_partition = function(tau, 
                                       varphi, 
                                       theta){
