@@ -1,3 +1,10 @@
+
+
+
+#' Basis from the simplex space with $D$ components
+#'
+#' @param D numbre of components
+#' @export
 ilr_basis = function(D){
   lapply(1:(D-1), function(i){
     I = i+1
@@ -9,7 +16,10 @@ ilr_basis = function(D){
       rep(1, D-I) ) / s_i
   })
 }
-
+#' Coordinates respect basis \code{\link{ilr_basis}}
+#'
+#' @param X compositional sample
+#' @export
 ilr_coordinates = function(X){
   D = ncol(X)
   r = data.frame(do.call('cbind', lapply(1:(D-1), function(i){

@@ -5,8 +5,7 @@ Version: 0.1
 URL: http://mcomas.net/mixpack
 Maintainer: Marc Comas-Cufí <marc.comas@gmail.com>
 Author: Marc Comas-Cufí <marc.comas@gmail.com>
-Description: Mixture package is intended to facilitate working with mixture of
-    distributions
+Description: Mixture package is intended to facilitate working with mixture of distributions
 Depends:
     R (>= 3.0.2)
 Imports:
