@@ -2,9 +2,13 @@
 % Please edit documentation in R/coda.R
 \name{ilr_basis}
 \alias{ilr_basis}
+<<<<<<< HEAD
 \title{Orthonormal basis for the Simplex space
 
 Basis from the simplex space with $D$ components}
+=======
+\title{Basis from the simplex space with $D$ components}
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 \usage{
 ilr_basis(D)
 }
@@ -12,8 +16,11 @@ ilr_basis(D)
 \item{D}{numbre of components}
 }
 \description{
+<<<<<<< HEAD
 Orthonormal basis for the Simplex space
 
+=======
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 Basis from the simplex space with $D$ components
 }
 

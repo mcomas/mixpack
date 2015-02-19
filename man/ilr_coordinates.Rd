@@ -2,9 +2,13 @@
 % Please edit documentation in R/coda.R
 \name{ilr_coordinates}
 \alias{ilr_coordinates}
+<<<<<<< HEAD
 \title{Coordinates for an orthonormal basis
 
 Coordinates respect basis \code{\link{ilr_basis}}}
+=======
+\title{Coordinates respect basis \code{\link{ilr_basis}}}
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 \usage{
 ilr_coordinates(X)
 }
@@ -12,8 +16,11 @@ ilr_coordinates(X)
 \item{X}{compositional sample}
 }
 \description{
+<<<<<<< HEAD
 Coordinates for an orthonormal basis
 
+=======
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 Coordinates respect basis \code{\link{ilr_basis}}
 }
 

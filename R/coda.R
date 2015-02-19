@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 #' @title Orthonormal basis for the Simplex space
 #' 
+=======
+
+
+
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 #' Basis from the simplex space with $D$ components
 #'
 #' @param D numbre of components
@@ -15,9 +21,12 @@ ilr_basis = function(D){
       rep(1, D-I) ) / s_i
   })
 }
+<<<<<<< HEAD
 
 #' @title Coordinates for an orthonormal basis
 #' 
+=======
+>>>>>>> 2880484322866831e3a7885f8e3c0ae4d17692b3
 #' Coordinates respect basis \code{\link{ilr_basis}}
 #'
 #' @param X compositional sample
