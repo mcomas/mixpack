@@ -30,7 +30,7 @@ b_absorbes_a = function(partition, partA, partB){
 #' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 #' \code{varphi}(\code{v_tau}, \code{a}) gives the representativeness of element with
 #' probabities \code{v_tau} to class \code{a}
-#' 
+#' @export
 #' @param theta function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 #' are classes to be combined.
@@ -48,7 +48,7 @@ get_hierarchical_partition = function(tau,
     COMB = COMB[, COMB[1,] != COMB[2,]]
     rownames(COMB) = c('a', 'b')
     colnames(COMB) = col.names=apply(COMB, 2, paste, collapse='-')
-    to_merge = which.min( v <- aaply(COMB, 2, function(ind){
+    to_merge = which.max( v <- aaply(COMB, 2, function(ind){
       a = ind[1]; b = ind[2]
       sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) * theta(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) ) )
     }) )

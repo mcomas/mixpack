@@ -52,6 +52,7 @@ rmixnorm_solution = function(n, solution, ...){
   }
   error("Not recognized format for solution")
 }
+#' @export
 rmixnorm_mclust = function(n, mclust_solution, ...){
   func_pi = mclust_solution$parameters$pro
   func_mean = mclust_solution$parameters$mean
@@ -61,6 +62,7 @@ rmixnorm_mclust = function(n, mclust_solution, ...){
            func_mean,
            func_sigma, ...)
 }
+#' @export
 rmixnorm_rmixmod = function(n, mixmod_solution, ...){
   func_pi = mixmod_solution@bestResult@parameters@proportions
   func_mean = t(mixmod_solution@bestResult@parameters@mean)
@@ -98,6 +100,7 @@ dmixnorm = function(x, Pi, Mu, S, part = 1:length(Pi)){
   }
   dmn / sum(Pi[part])
 }
+#' @export
 dmixnorm_solution = function(x, solution, ...){
   if('MixmodCluster' %in% is(solution)){
     if(solution@dataType == "quantitative"){
@@ -109,6 +112,7 @@ dmixnorm_solution = function(x, solution, ...){
   }
   error("Not recognized format for solution")
 }
+#' @export
 dmixnorm_mclust = function(x, mclust_solution, ...){
   func_pi = mclust_solution$parameters$pro
   func_mean = mclust_solution$parameters$mean
@@ -118,6 +122,7 @@ dmixnorm_mclust = function(x, mclust_solution, ...){
            func_mean,
            func_sigma, ...)
 }
+#' @export
 dmixnorm_rmixmod = function(x, mixmod_solution, ...){
   func_pi = mixmod_solution@bestResult@parameters@proportions
   func_mean = t(mixmod_solution@bestResult@parameters@mean)
