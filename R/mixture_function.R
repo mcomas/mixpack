@@ -9,9 +9,9 @@ require(mvtnorm)
 #' of each gaussian component
 #' @param S a three dimensional array where third component indicates the variance 
 #' of each gaussian component
-#' @export
 #' @param labels a boolean indicating whether or not a label shoud be returned indicating
 #' the component from where observation has been generated
+#' @export
 rmixnorm = function(n, Pi, Mu, S, labels=F){
   z = sample(x=1:length(Pi), size=n, prob=Pi, replace=T)
   rmn = matrix(0, nrow=n, ncol=nrow(Mu))
@@ -21,7 +21,7 @@ rmixnorm = function(n, Pi, Mu, S, labels=F){
       if(ncol(Mu)==1)
         rmn[z==i,] = rnorm(n_z, mean=Mu[,i], sd=sqrt(S[,,i]))
       else
-        rmn[z==i,] = rmvnorm(n_z, mean=Mu[,i], sigma=S[,,i])
+        rmn[z==i,] = mvtnorm::rmvnorm(n_z, mean=Mu[,i], sigma=S[,,i])
     }
   }
   if(labels)
@@ -36,6 +36,7 @@ rmixnorm = function(n, Pi, Mu, S, labels=F){
 #' 
 #' @param n sample size
 #' @param solution solution comming from packages \code{Mclust} or \code{rmixmod}
+#' @param ... arguments passed to function \code{\link{rmixnorm}}
 #' @export
 #' @examples
 #' require(mclust)
@@ -50,7 +51,7 @@ rmixnorm_solution = function(n, solution, ...){
   if('Mclust' %in% is(solution)){
     return(rmixnorm_mclust(n, solution, ...))
   }
-  error("Not recognized format for solution")
+  stop("Not recognized format for solution")
 }
 rmixnorm_mclust = function(n, mclust_solution, ...){
   func_pi = mclust_solution$parameters$pro
@@ -94,10 +95,24 @@ dmixnorm = function(x, Pi, Mu, S, part = 1:length(Pi)){
     if(ncol(Mu)==1)
       dmn = dmn + Pi[i] * dnorm(x, mean=Mu[,i], sd=sqrt(S[,,i]))
     else
-      dmn = dmn + Pi[i] * dmvnorm(x, mean=Mu[,i], sigma=S[,,i])
+      dmn = dmn + Pi[i] * mvtnorm::dmvnorm(x, mean=Mu[,i], sigma=S[,,i])
   }
   dmn / sum(Pi[part])
 }
+#' Density function of specified gaussian mixture model.
+#' 
+#' The parameters are defined from the parameters obtained using other 
+#' packages (' \code{Mclust}, 
+#' \code{rmixmod})
+#' 
+#' @param x vector/matrix where density function is evaluated
+#' @param solution solution comming from packages \code{Mclust} or \code{rmixmod}
+#' @param ... arguments passed to function \code{\link{dmixnorm}}
+#' @export
+#' @examples
+#' require(mclust)
+#' mod1 = Mclust(iris[,1:4])
+#' rmixnorm_solution(10, mod1)
 dmixnorm_solution = function(x, solution, ...){
   if('MixmodCluster' %in% is(solution)){
     if(solution@dataType == "quantitative"){
@@ -107,7 +122,7 @@ dmixnorm_solution = function(x, solution, ...){
   if('Mclust' %in% is(solution)){
     return(dmixnorm_mclust(x, solution, ...))
   }
-  error("Not recognized format for solution")
+  stop("Not recognized format for solution")
 }
 dmixnorm_mclust = function(x, mclust_solution, ...){
   func_pi = mclust_solution$parameters$pro
@@ -138,7 +153,7 @@ dmixnorm_solution_func = function(solution, ...){
   if('Mclust' %in% is(solution)){
     return(function(x) dmixnorm_mclust(x, solution, ...))
   }
-  error("Not recognized format for solution")
+  stop("Not recognized format for solution")
 }
 
 get_order = function(fittedMean, fittedVariance, mainMean, mainVariance){
@@ -161,7 +176,7 @@ get_order = function(fittedMean, fittedVariance, mainMean, mainVariance){
 #' of each gaussian component
 #' @export
 clr_mixnorm = function(X, Pi, Mu, Sigma){
-  log.dnorm = llply( 1:length(Pi), function(i) log(Pi[i]) + dmvnorm(X, mean=Mu[,i], sigma=Sigma[,,i], log=T))
+  log.dnorm = lapply( 1:length(Pi), function(i) log(Pi[i]) + mvtnorm::dmvnorm(X, mean=Mu[,i], sigma=Sigma[,,i], log=T))
   log.dnorm.mean = Reduce('+', log.dnorm) / length(log.dnorm)
-  data.frame(do.call(cbind, llply( log.dnorm, function(comp) comp - log.dnorm.mean)))
+  data.frame(do.call(cbind, lapply( log.dnorm, function(comp) comp - log.dnorm.mean)))
 }
