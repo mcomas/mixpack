@@ -9,7 +9,8 @@ Description: Mixture package is intended to facilitate working with mixture of d
 Depends:
     R (>= 3.0.2)
 Imports:
-    mvtnorm
+    mvtnorm,
+    plyr
 Suggests:
     mclust,
     Rmixmod
