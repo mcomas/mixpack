@@ -173,7 +173,7 @@ cluster_partition = function(tau, partition)
 
 plot.hpartition = function(hp, tau, data, nrow = 2){
   df = ldply(hp, function(partition){
-    df = data
+    df = data.frame(data)
     df$cluster = cluster_partition(tau, partition)
     df$step = factor(length(partition), levels =  length(hp):1)
     df

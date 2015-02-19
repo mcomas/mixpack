@@ -23,3 +23,4 @@ ilr_coordinates = function(X){
   names(r) = paste('coord', 1:(D-1), sep='.')
   r
 }
+
