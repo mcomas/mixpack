@@ -60,3 +60,13 @@ b_absorbes_a = function(partition, partA, partB){
   names(new_partition) = plyr::laply(new_partition, part_name)
   new_partition
 }
+#'
+#' Given a matrix of tau and a partition decide in which part is classified each observation
+#' @param tau matrix of posterioris
+#' @param partition list of vectors containing the partition
+#' @export
+cluster_partition = function(tau, partition)
+  names(partition)[apply( do.call('cbind', plyr::llply(partition, function(part){
+    if(is.vector(tau[,part])) return(tau[,part])
+    apply(tau[,part], 1, sum)
+  })), 1, which.max)]
