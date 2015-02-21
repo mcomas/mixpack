@@ -43,6 +43,32 @@ get_hierarchical_partition = function(tau,
   class(partitions) = 'hpartition'
   partitions
 }
+#' @title Build a hierchical partition randomly from given K
+#' 
+#' Create a partition of classes from weights or probabilities
+#'
+#' This function return a hierachical partition contructed randonmly.
+#' 
+#' @param K number of initial groups
+#' 
+#' @export
+get_random_hierarchical_partition = function(K){
+  partitions = list()
+  partitions[[K]] = as.list(1:K)
+  names(partitions[[K]]) = plyr::laply(partitions[[K]], part_name)
+  for (k in K:2) {
+    
+    COMB = t(expand.grid(1:k, 1:k))
+    COMB = COMB[, COMB[1, ] != COMB[2, ]]
+    rownames(COMB) = c("a", "b")
+    colnames(COMB) = col.names = apply(COMB, 2, paste, collapse = "-")
+    to_merge = sample(1:ncol(COMB), 1)
+    part = COMB[, to_merge]
+    partitions[[k - 1]] = b_absorbes_a(partitions[[k]], part["a"],part["b"])
+  }
+  class(partitions) = "hpartition"
+  partitions
+}
 
 part_name = function(part) sprintf("(%s)", paste(sort(part), collapse=','))
 
