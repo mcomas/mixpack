@@ -1,6 +1,6 @@
 library(plyr)
 
-#' @title Build a hierchical partition from posterior probabilities
+#' Build a hierchical partition from posterior probabilities
 #' 
 #' This function applies the methodology described in [citar article]
 #' to build a hierarchy of classes using the weights or probabilities 
@@ -41,7 +41,7 @@ get_hierarchical_partition = function(tau,
   class(partitions) = 'hpartition'
   partitions
 }
-#' @title Build a hierchical partition randomly from given K
+#' Build a hierchical partition randomly from given K
 #' 
 #' This function return a hierachical partition contructed randonmly.
 #' 
@@ -82,7 +82,8 @@ b_absorbes_a = function(partition, partA, partB){
   names(new_partition) = plyr::laply(new_partition, part_name)
   new_partition
 }
-#'
+#' Create a cluster from a partition
+#' 
 #' Given a matrix of tau and a partition decide in which part is classified each observation
 #' @param tau matrix of posterioris
 #' @param partition list of vectors containing the partition

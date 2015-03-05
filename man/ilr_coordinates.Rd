@@ -2,9 +2,7 @@
 % Please edit documentation in R/coda.R
 \name{ilr_coordinates}
 \alias{ilr_coordinates}
-\title{Coordinates for an orthonormal basis
-
-Coordinates respect basis \code{\link{ilr_basis}}}
+\title{Coordinates for an orthonormal basis}
 \usage{
 ilr_coordinates(X)
 }
@@ -12,8 +10,6 @@ ilr_coordinates(X)
 \item{X}{compositional sample}
 }
 \description{
-Coordinates for an orthonormal basis
-
 Coordinates respect basis \code{\link{ilr_basis}}
 }
 

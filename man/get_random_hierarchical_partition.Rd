@@ -2,9 +2,7 @@
 % Please edit documentation in R/combining_partitions.R
 \name{get_random_hierarchical_partition}
 \alias{get_random_hierarchical_partition}
-\title{Build a hierchical partition randomly from given K
-
-This function return a hierachical partition contructed randonmly.}
+\title{Build a hierchical partition randomly from given K}
 \usage{
 get_random_hierarchical_partition(K)
 }
@@ -12,8 +10,6 @@ get_random_hierarchical_partition(K)
 \item{K}{number of initial groups}
 }
 \description{
-Build a hierchical partition randomly from given K
-
 This function return a hierachical partition contructed randonmly.
 }
 

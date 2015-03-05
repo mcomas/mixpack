@@ -2,11 +2,7 @@
 % Please edit documentation in R/combining_partitions.R
 \name{get_hierarchical_partition}
 \alias{get_hierarchical_partition}
-\title{Build a hierchical partition from posterior probabilities
-
-This function applies the methodology described in [citar article]
-to build a hierarchy of classes using the weights or probabilities
-that an element belongs to each class}
+\title{Build a hierchical partition from posterior probabilities}
 \usage{
 get_hierarchical_partition(tau, omega, lambda)
 }
@@ -23,8 +19,6 @@ Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \co
 are classes to be combined.}
 }
 \description{
-Build a hierchical partition from posterior probabilities
-
 This function applies the methodology described in [citar article]
 to build a hierarchy of classes using the weights or probabilities
 that an element belongs to each class

@@ -2,7 +2,7 @@
 % Please edit documentation in R/combining_partitions.R
 \name{cluster_partition}
 \alias{cluster_partition}
-\title{Given a matrix of tau and a partition decide in which part is classified each observation}
+\title{Create a cluster from a partition}
 \usage{
 cluster_partition(tau, partition)
 }

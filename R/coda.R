@@ -1,5 +1,5 @@
 
-#' @title Orthonormal basis for the Simplex space
+#' Orthonormal basis for the Simplex space
 #' 
 #' Basis from the simplex space with $D$ components
 #'
@@ -17,7 +17,7 @@ ilr_basis = function(D){
   })
 }
 
-#' @title Coordinates for an orthonormal basis
+#' Coordinates for an orthonormal basis
 #' 
 #' Coordinates respect basis \code{\link{ilr_basis}}
 #'
