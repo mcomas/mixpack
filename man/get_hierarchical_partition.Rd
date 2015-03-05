@@ -4,8 +4,6 @@
 \alias{get_hierarchical_partition}
 \title{Build a hierchical partition from posterior probabilities
 
-Create a partition of classes from weights or probabilities
-
 This function applies the methodology described in [citar article]
 to build a hierarchy of classes using the weights or probabilities
 that an element belongs to each class}
@@ -26,8 +24,6 @@ are classes to be combined.}
 }
 \description{
 Build a hierchical partition from posterior probabilities
-
-Create a partition of classes from weights or probabilities
 
 This function applies the methodology described in [citar article]
 to build a hierarchy of classes using the weights or probabilities

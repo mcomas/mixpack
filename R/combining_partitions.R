@@ -2,8 +2,6 @@ library(plyr)
 
 #' @title Build a hierchical partition from posterior probabilities
 #' 
-#' Create a partition of classes from weights or probabilities
-#'
 #' This function applies the methodology described in [citar article]
 #' to build a hierarchy of classes using the weights or probabilities 
 #' that an element belongs to each class
@@ -45,8 +43,6 @@ get_hierarchical_partition = function(tau,
 }
 #' @title Build a hierchical partition randomly from given K
 #' 
-#' Create a partition of classes from weights or probabilities
-#'
 #' This function return a hierachical partition contructed randonmly.
 #' 
 #' @param K number of initial groups

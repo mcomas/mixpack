@@ -4,8 +4,6 @@
 \alias{get_random_hierarchical_partition}
 \title{Build a hierchical partition randomly from given K
 
-Create a partition of classes from weights or probabilities
-
 This function return a hierachical partition contructed randonmly.}
 \usage{
 get_random_hierarchical_partition(K)
@@ -15,8 +13,6 @@ get_random_hierarchical_partition(K)
 }
 \description{
 Build a hierchical partition randomly from given K
-
-Create a partition of classes from weights or probabilities
 
 This function return a hierachical partition contructed randonmly.
 }
