@@ -1,4 +1,3 @@
-library(plyr)
 
 #' Build a hierchical partition from posterior probabilities
 #' 
@@ -16,29 +15,29 @@ library(plyr)
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 #' are classes to be combined.
 #' @export
-get_hierarchical_partition = function(tau, 
-                                      omega, 
-                                      lambda){
-  ctau = tau
-  K = ncol(ctau)
-  partitions = list()
-  partitions[[K]] = as.list(1:K)
-  names(partitions[[K]]) = plyr::laply(partitions[[K]], part_name)
-  for(k in K:2){
-    COMB = t(expand.grid(1:k, 1:k))
-    COMB = COMB[, COMB[1,] != COMB[2,]]
-    rownames(COMB) = c('a', 'b')
-    colnames(COMB) = col.names = apply(COMB, 2, paste, collapse='-')
-    to_merge = which.max( v <- plyr::aaply(COMB, 2, function(ind){
-      a = ind[1]; b = ind[2]
-      sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) ) )
-    }) )
-    part = COMB[,to_merge]
-    partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
-    ctau[,part['b']] = ctau[,part['a']] + ctau[,part['b']]
-    ctau  = ctau[,-part['a']]
+get_hierarchical_partition <- function(tau, omega, lambda) {
+  ctau <- tau
+  K <- ncol(ctau)
+  partitions <- list()
+  partitions[[K]] <- as.list(1:K)
+  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
+  for (k in K:2) {
+    COMB <- t(expand.grid(1:k, 1:k))
+    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
+    rownames(COMB) <- c("a", "b")
+    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
+    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
+      a <- ind[1]
+      b <- ind[2]
+      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
+        a)))
+    }))
+    part <- COMB[, to_merge]
+    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
+    ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
+    ctau <- ctau[, -part["a"]]
   }
-  class(partitions) = 'hpartition'
+  class(partitions) <- "hpartition"
   partitions
 }
 #' Build a hierchical partition randomly from given K
@@ -48,38 +47,37 @@ get_hierarchical_partition = function(tau,
 #' @param K number of initial groups
 #' 
 #' @export
-get_random_hierarchical_partition = function(K){
-  partitions = list()
-  partitions[[K]] = as.list(1:K)
-  names(partitions[[K]]) = plyr::laply(partitions[[K]], part_name)
+get_random_hierarchical_partition <- function(K) {
+  partitions <- list()
+  partitions[[K]] <- as.list(1:K)
+  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
   for (k in K:2) {
-    
-    COMB = t(expand.grid(1:k, 1:k))
-    COMB = COMB[, COMB[1, ] != COMB[2, ]]
-    rownames(COMB) = c("a", "b")
-    colnames(COMB) = col.names = apply(COMB, 2, paste, collapse = "-")
-    to_merge = sample(1:ncol(COMB), 1)
-    part = COMB[, to_merge]
-    partitions[[k - 1]] = b_absorbes_a(partitions[[k]], part["a"],part["b"])
+    COMB <- t(expand.grid(1:k, 1:k))
+    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
+    rownames(COMB) <- c("a", "b")
+    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
+    to_merge <- sample(1:ncol(COMB), 1)
+    part <- COMB[, to_merge]
+    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
   }
-  class(partitions) = "hpartition"
+  class(partitions) <- "hpartition"
   partitions
 }
 
-part_name = function(part) sprintf("(%s)", paste(sort(part), collapse=','))
+part_name <- function(part) sprintf("(%s)", paste(sort(part), collapse = ","))
 
 ## PART B absorbes A. In this function part A is incorporated to B and after that partition A is eliminated
-b_absorbes_a = function(partition, partA, partB){
-  if(partA == partB){
-    stop( "Same part A and B")
+b_absorbes_a <- function(partition, partA, partB) {
+  if (partA == partB) {
+    stop("Same part A and B")
   }
-  if(! (partA %in% 1:length(partition) & partB %in% 1:length(partition)) ){
-    stop( "Some part out of range")
+  if (!(partA %in% 1:length(partition) & partB %in% 1:length(partition))) {
+    stop("Some part out of range")
   }
-  new_partition = partition
-  new_partition[[partB]] = c(new_partition[[partA]], new_partition[[partB]])
-  new_partition[[partA]] = NULL
-  names(new_partition) = plyr::laply(new_partition, part_name)
+  new_partition <- partition
+  new_partition[[partB]] <- c(new_partition[[partA]], new_partition[[partB]])
+  new_partition[[partA]] <- NULL
+  names(new_partition) <- sapply(new_partition, part_name)
   new_partition
 }
 #' Create a cluster from a partition
@@ -88,8 +86,8 @@ b_absorbes_a = function(partition, partA, partB){
 #' @param tau matrix of posterioris
 #' @param partition list of vectors containing the partition
 #' @export
-cluster_partition = function(tau, partition)
-  names(partition)[apply( do.call('cbind', plyr::llply(partition, function(part){
-    if(is.vector(tau[,part])) return(tau[,part])
-    apply(tau[,part], 1, sum)
-  })), 1, which.max)]
+cluster_partition <- function(tau, partition) names(partition)[apply(do.call("cbind", lapply(partition, function(part) {
+  if (is.vector(tau[, part])) 
+    return(tau[, part])
+  apply(tau[, part], 1, sum)
+})), 1, which.max)] 
