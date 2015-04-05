@@ -4,8 +4,8 @@ author: "Marc Comas-Cufí"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  \VignetteIndexEntry{Merging mixture components}
-  \VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Merging mixture components}
+  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
