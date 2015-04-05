@@ -16,3 +16,4 @@ Suggests:
     mclust,
     Rmixmod
 License: GPL
+LazyData: true
