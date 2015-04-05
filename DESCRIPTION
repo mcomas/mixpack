@@ -15,4 +15,4 @@ Imports:
 Suggests:
     mclust,
     Rmixmod
-License: MIT
+License: GPL

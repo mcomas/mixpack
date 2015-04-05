@@ -7,20 +7,45 @@
 rmixnorm(n, Pi, Mu, S, labels = F)
 }
 \arguments{
-\item{n}{sample size}
+\item{n}{Sample size}
 
-\item{Pi}{a vector indicating the mixing proportions}
+\item{Pi}{A vector indicating the mixing proportions}
 
-\item{Mu}{a two dimensional array where second component indicates the mean
+\item{Mu}{A two dimensional array where second component indicates the mean
 of each gaussian component}
 
-\item{S}{a three dimensional array where third component indicates the variance
+\item{S}{A three dimensional array where third component indicates the variance
 of each gaussian component}
 
-\item{labels}{a boolean indicating whether or not a label shoud be returned indicating
-the component from where observation has been generated}
+\item{labels}{A logical indicating whether or not a label shoud be returned indicating
+the component from where observation has been generated (default FALSE)}
+}
+\value{
+A matrix with \code{n} row and columns given by the dimension of \code{Mu} and \code{S}.
+If \code{labels = T} another column is included indicating the component from where the observation
+was generated.
 }
 \description{
 Random sample generated from an specified gaussian mixture model.
+}
+\examples{
+Pi = c(0.5, 0.3, 0.2)
+Mu = array(c(## Mu first component
+             5, 5,
+             ## Mu second component
+             1, 1,
+             ## Mu thir component
+             0, 0), dim = c(2,3))
+S = array(c(## Sigma first component
+            1, 0,
+            0, 1,
+            ## Sigma second component
+            0.2, 0,
+            0, 0.2,
+            ## Sigma third component
+            0.05, 0,
+            0, 0.05), dim = c(2, 2, 3))
+X = rmixnorm(100, Pi = Pi, Mu = Mu, S = S, labels = T)
+plot(X[,1:2], col=X[,3])
 }
 
