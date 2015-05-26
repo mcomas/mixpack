@@ -1,4 +1,3 @@
-
 #' Orthonormal basis for the Simplex space
 #' 
 #' Basis from the simplex space with $D$ components
@@ -33,4 +32,13 @@ ilr_coordinates <- function(X) {
   })))
   names(r) <- paste("coord", 1:(D - 1), sep = ".")
   r
+} 
+
+#' clr coordinates of compositional data
+#'
+#' @param X compositional sample
+#' @export
+clr_coordinates <- function(X) {
+  lX = log(X)
+  lX - apply(lX, 1, mean)
 } 
