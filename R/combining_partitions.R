@@ -63,6 +63,33 @@ get_random_hierarchical_partition <- function(K) {
   class(partitions) <- "hpartition"
   partitions
 }
+#'
+#' @export
+get_hierarchical_partition_mult <- function(tau, omega, lambda) {
+  ctau <- tau
+  K <- ncol(ctau)
+  partitions <- list()
+  partitions[[K]] <- as.list(1:K)
+  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
+  for (k in K:2) {
+    COMB <- t(expand.grid(1:k, 1:k))
+    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
+    rownames(COMB) <- c("a", "b")
+    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
+    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
+      a <- ind[1]
+      b <- ind[2]
+      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
+                                                                                                                          a)))
+    }))
+    part <- COMB[, to_merge]
+    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
+    ctau[, part["b"]] <- sqrt(ctau[, part["a"]] * ctau[, part["b"]])
+    ctau <- ctau[, -part["a"]]
+  }
+  class(partitions) <- "hpartition"
+  partitions
+}
 
 part_name <- function(part) sprintf("(%s)", paste(sort(part), collapse = ","))
 
