@@ -144,6 +144,7 @@ prop_partition_mult = function(tau, partition)
     apply(tau[,part], 1, prod)^(1/length(part))
   }))
 
+#' @export
 get_hierarchical_partition_mult_2 = function(tau, 
                                              varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
                                              theta){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
