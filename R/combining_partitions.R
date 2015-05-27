@@ -146,8 +146,8 @@ prop_partition_mult = function(tau, partition)
 
 #' @export
 get_hierarchical_partition_mult_2 = function(tau, 
-                                             varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
-                                             theta){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
+                                             omega,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
+                                             lambda){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
   ctau = tau
   K = ncol(ctau)
   partitions = list()
@@ -160,7 +160,7 @@ get_hierarchical_partition_mult_2 = function(tau,
     colnames(COMB) = col.names=apply(COMB, 2, paste, collapse='-')
     to_merge = which.max( v <- aaply(COMB, 2, function(ind){
       a = ind[1]; b = ind[2]
-      sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) * theta(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) ) )
+      sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) ) )
     }) )
     part = COMB[,to_merge]
     partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
