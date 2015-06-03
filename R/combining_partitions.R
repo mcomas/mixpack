@@ -139,7 +139,7 @@ cluster_partition <- function(tau, partition) names(partition)[apply(do.call("cb
 })), 1, which.max)] 
 
 prop_partition_mult = function(tau, partition)
-  do.call('cbind', llply(partition, function(part){
+  do.call('cbind', lapply(partition, function(part){
     if(is.vector(tau[,part])) return(tau[,part])
     apply(tau[,part], 1, prod)^(1/length(part))
   }))
