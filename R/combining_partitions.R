@@ -40,6 +40,7 @@ get_hierarchical_partition <- function(tau, omega, lambda) {
   class(partitions) <- "hpartition"
   partitions
 }
+
 #' Build a hierchical partition randomly from given K
 #' 
 #' This function return a hierachical partition contructed randonmly.
@@ -63,7 +64,25 @@ get_random_hierarchical_partition <- function(K) {
   class(partitions) <- "hpartition"
   partitions
 }
-#'
+
+#' Build a hierchical partition from posterior probabilities
+#' 
+#' This function applies the methodology described in [citar article]
+#' to build a hierarchy of classes using the weights or probabilities 
+#' that an element belongs to each class
+#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
+#' 
+#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
+#' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
+#' probabities \code{v_tau} to class \code{a}
+#' 
+#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
+#' are classes to be combined.
+#' 
+#' Combination is done multiplicatively
+#' 
 #' @export
 get_hierarchical_partition_mult <- function(tau, omega, lambda) {
   ctau <- tau
@@ -147,7 +166,7 @@ get_hierarchical_partition_mult_func = function(tau,
     colnames(COMB) = col.names=apply(COMB, 2, paste, collapse='-')
     to_merge = which.max( v <- aaply(COMB, 2, function(ind){
       a = ind[1]; b = ind[2]
-      sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) * theta(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) ) )
+      sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) ) )
     }) )
     part = COMB[,to_merge]
     partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
