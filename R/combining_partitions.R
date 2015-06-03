@@ -170,25 +170,26 @@ get_hierarchical_partition_mult_func = function(tau,
                                                     if(is.vector(tau[,part])) return(tau[,part])
                                                     apply(tau[,part], 1, prod)^(1/length(part))
                                                   }))){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
-  ctau = tau
-  K = ncol(ctau)
-  partitions = list()
-  partitions[[K]] = as.list(1:K)
-  names(partitions[[K]]) = laply(partitions[[K]], part_name)
-  for(k in K:2){
-    COMB = t(expand.grid(1:k, 1:k))
-    COMB = COMB[, COMB[1,] != COMB[2,]]
-    rownames(COMB) = c('a', 'b')
-    colnames(COMB) = col.names=apply(COMB, 2, paste, collapse='-')
-    to_merge = which.max( v <- aaply(COMB, 2, function(ind){
-      a = ind[1]; b = ind[2]
-      sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) omega(v_tau, a) ) )
-    }) )
-    part = COMB[,to_merge]
-    partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
+  ctau <- tau
+  K <- ncol(ctau)
+  partitions <- list()
+  partitions[[K]] <- as.list(1:K)
+  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
+  for (k in K:2) {
+    COMB <- t(expand.grid(1:k, 1:k))
+    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
+    rownames(COMB) <- c("a", "b")
+    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
+    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
+      a <- ind[1]
+      b <- ind[2]
+      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
+                                                                                                                          a)))
+    }))
+    part <- COMB[, to_merge]
+    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau = func(tau, partitions[[k-1]])
   }
-  class(partitions) = 'hpartition'
+  class(partitions) <- "hpartition"
   partitions
 }
-
