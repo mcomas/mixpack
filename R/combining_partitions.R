@@ -166,7 +166,7 @@ get_hierarchical_partition_mult_func = function(tau,
                                                 varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
                                                 theta,
                                                 func = function(tau, partition)
-                                                  do.call('cbind', llply(partition, function(part){
+                                                  do.call('cbind', lapply(partition, function(part){
                                                     if(is.vector(tau[,part])) return(tau[,part])
                                                     apply(tau[,part], 1, prod)^(1/length(part))
                                                   }))){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
