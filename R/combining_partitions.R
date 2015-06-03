@@ -125,9 +125,16 @@ prop_partition_mult = function(tau, partition)
     apply(tau[,part], 1, prod)^(1/length(part))
   }))
 
-get_hierarchical_partition_mult_2 = function(tau, 
-                                             varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
-                                             theta){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
+#'
+#' @export
+get_hierarchical_partition_mult_func = function(tau, 
+                                                varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
+                                                theta,
+                                                func = function(tau, partition)
+                                                  do.call('cbind', llply(partition, function(part){
+                                                    if(is.vector(tau[,part])) return(tau[,part])
+                                                    apply(tau[,part], 1, prod)^(1/length(part))
+                                                  }))){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
   ctau = tau
   K = ncol(ctau)
   partitions = list()
@@ -144,8 +151,9 @@ get_hierarchical_partition_mult_2 = function(tau,
     }) )
     part = COMB[,to_merge]
     partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
-    ctau = prop_partition_mult(tau, partitions[[k-1]])
+    ctau = func(tau, partitions[[k-1]])
   }
   class(partitions) = 'hpartition'
   partitions
 }
+
