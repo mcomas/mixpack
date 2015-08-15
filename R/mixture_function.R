@@ -80,7 +80,10 @@ rmixnorm_mclust <- function(n, mclust_solution, ...) {
 rmixnorm_rmixmod <- function(n, mixmod_solution, ...) {
   func_pi <- mixmod_solution@bestResult@parameters@proportions
   func_mean <- t(mixmod_solution@bestResult@parameters@mean)
-  func_sigma <- do.call("abind", list(mixmod_solution@bestResult@parameters@variance, along = 3))
+  func_sigma <- array(do.call("c", mixmod_solution@bestResult@parameters@variance), c(NCOL(mixmod_solution@bestResult@parameters@mean),
+                                                                                      NCOL(mixmod_solution@bestResult@parameters@mean),
+                                                                                      NROW(mixmod_solution@bestResult@parameters@mean)))
+  #func_sigma <- do.call("abind", list(mixmod_solution@bestResult@parameters@variance, along = 3))
   rmixnorm(n, func_pi, func_mean, func_sigma, ...)
 }
 
@@ -140,9 +143,13 @@ dmixnorm_mclust <- function(x, mclust_solution, ...) {
   dmixnorm(x, func_pi, func_mean, func_sigma, ...)
 }
 dmixnorm_rmixmod <- function(x, mixmod_solution, ...) {
+  K = 
   func_pi <- mixmod_solution@bestResult@parameters@proportions
   func_mean <- t(mixmod_solution@bestResult@parameters@mean)
-  func_sigma <- do.call("abind", list(mixmod_solution@bestResult@parameters@variance, along = 3))
+  func_sigma <- array(do.call("c", mixmod_solution@bestResult@parameters@variance), c(NCOL(mixmod_solution@bestResult@parameters@mean),
+                                                                                      NCOL(mixmod_solution@bestResult@parameters@mean),
+                                                                                      NROW(mixmod_solution@bestResult@parameters@mean)))
+  #func_sigma <- do.call("abind", list(mixmod_solution@bestResult@parameters@variance, along = 3))
   dmixnorm(x, func_pi, func_mean, func_sigma, ...)
 }
 ## functions
