@@ -1,0 +1,13 @@
+---
+title: "Merging mixture components"
+author: "Marc Comas-Cufí"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Merging mixture components}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+The most standard parametric approach in cluster analysis assumes data can be modelled by a finite mixture distribution. The approach has two steps; first, a finite mixture distribution with probability density function \[ f(\;\cdot\; ; \pi_1, \dots, \pi_k, \theta_1, \dots, \theta_k) = \pi_1   (\;\cdot\; ; \theta_1) + \dots + \pi_k f(\;\cdot\; ; \theta_k), \] with $\sum_{j=1}^k = \pi_j =1$ is fitted to a sample $ X$, obtaining estimates $\hat{\pi}_1, \dots, \hat{\pi}_k$ and $\hat{\theta}_1 \dots \hat{\theta}_k$. After the fitting process, each observation $ x$ is assigned to the finite mixture component $j$, $1\leq j \leq k$, with $\hat{\pi}_j f( x ; \hat{\theta}_j)$ maximum. 
+
