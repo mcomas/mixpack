@@ -98,7 +98,7 @@ rmixnorm_rmixmod <- function(n, mixmod_solution, ...) {
 #' @param part subcomposition where x shoud be evaluated. Take into an account that
 #' if x has dimensions K, K components must be selected by \code{part}
 #' @export
-dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi)) {
+dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = T) {
   # z = sample(x=1:length(Pi), size=n, prob=Pi, replace=T) rmn = matrix(0, nrow=n, ncol=nrow(Mu))
   if (is.vector(x)) {
     dmn <- 0
@@ -109,7 +109,11 @@ dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi)) {
     if (ncol(Mu) == 1) 
       dmn <- dmn + Pi[i] * dnorm(x, mean = Mu[, i], sd = sqrt(S[, , i])) else dmn <- dmn + Pi[i] * mvtnorm::dmvnorm(x, mean = Mu[, i], sigma = S[, , i])
   }
-  dmn/sum(Pi[part])
+  if(closure){
+    dmn/sum(Pi[part])
+  }else{
+    dmn
+  }
 }
 #' Density function of specified gaussian mixture model.
 #' 
