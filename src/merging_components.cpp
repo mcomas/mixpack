@@ -149,6 +149,10 @@ List mergeStep(NumericMatrix post,
 }
 
 
+//' Merging components step
+//' 
+//' @param post Matrix with the posterior probabilities
+//' @export
 // [[Rcpp::export]]
 List mergeStep_prop_codaNorm(NumericMatrix post){
   return( mergeStep(post, omega_prop, lambda_codaNorm) );

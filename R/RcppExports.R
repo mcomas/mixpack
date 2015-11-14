@@ -41,6 +41,10 @@ mergeComponents <- function(post, a, b) {
     .Call('mixpack_mergeComponents', PACKAGE = 'mixpack', post, a, b)
 }
 
+#' Merging components step
+#' 
+#' @param post Matrix with the posterior probabilities
+#' @export
 mergeStep_prop_codaNorm <- function(post) {
     .Call('mixpack_mergeStep_prop_codaNorm', PACKAGE = 'mixpack', post)
 }
