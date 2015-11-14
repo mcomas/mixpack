@@ -8,14 +8,10 @@ Author: Marc Comas-Cufí <marc.comas@gmail.com>
 Description: Mixture package is intended to facilitate working with mixture of distributions. 
     It incorporate functions to merge mixture components in such a way that more meaningful
     clusters are obtained.
-Depends: 
-    R (>= 3.0.2)
-Imports: 
-    mvtnorm
-Suggests: 
-    mclust,
-    Rmixmod,
-    knitr
+Depends: R (>= 3.0.2)
+Imports: Rcpp (>= 0.11.5), mvtnorm
+LinkingTo: Rcpp
+Suggests: mclust, Rmixmod, knitr
 License: GPL
 LazyData: true
 VignetteBuilder: knitr
