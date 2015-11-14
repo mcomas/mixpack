@@ -1,0 +1,45 @@
+---
+title: "Entropy approach"
+author: "Marc Comas-Cufí"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Entropy approach}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r}
+xlog = function(x) x * log(x)
+l_confusion = list(
+  'entr' = function(v_tau, a, b) xlog(v_tau[a] + v_tau[b]) - xlog(v_tau[a]) - xlog(v_tau[b]),
+  'demp' = function(v_tau, a, b) if(which.max(v_tau) == b) 1 else 0,
+  'demp.mod' = function(v_tau, a, b) v_tau[b] * (v_tau[a] + v_tau[b])^-1,
+  'coda' = function(v_tau, a, b) log(v_tau[b] / v_tau[a]),
+  'coda.norm' = function(v_tau, a, b) -log(v_tau[b] / v_tau[a])^2,
+  'prop' = function(v_tau, a, b) v_tau[b] )
+
+# Weighing functions
+l_weight = list(
+  'cnst' = function(v_tau, a) 1,
+  'prop' = function(v_tau, a) v_tau[a],
+  'dich' = function(v_tau, a) if(which.max(v_tau) == a) 1 else 0
+)
+```
+
+```{r}
+library(mclust)
+data(Baudry_etal_2010_JCGS_examples, package = 'mclust')
+summary(mc <- mclust::Mclust(ex4.4.1))
+```
+
+```{r}
+library(mixpack)
+hp <- get_hierarchical_partition(mc$z, omega = l_weight$cnst, lambda = l_confusion$entr)
+```
+
+```{r, fig.width=5, fig.height=4}
+library(ggplot2)
+df = data.frame(ex4.4.1, 'cluster' = cluster_partition(mc$z, partition = hp[[2]]))
+ggplot(data = df) + geom_point(aes(x=X1, y=X2, col=cluster))
+```
