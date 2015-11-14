@@ -10,34 +10,7 @@
 #' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 #' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
 #' probabities \code{v_tau} to class \code{a}
-<<<<<<< HEAD
-#' @export
-#' @param theta function with three parameters (\code{v_tau}, \code{a}, \code{b}).
-#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
-#' are classes to be combined.
-#' 
-get_hierarchical_partition = function(tau, 
-                                      varphi, 
-                                      theta){
-  ctau = tau
-  K = ncol(ctau)
-  partitions = list()
-  partitions[[K]] = as.list(1:K)
-  names(partitions[[K]]) = laply(partitions[[K]], part_name)
-  for(k in K:2){
-    COMB = t(expand.grid(1:k, 1:k))
-    COMB = COMB[, COMB[1,] != COMB[2,]]
-    rownames(COMB) = c('a', 'b')
-    colnames(COMB) = col.names=apply(COMB, 2, paste, collapse='-')
-    to_merge = which.max( v <- aaply(COMB, 2, function(ind){
-      a = ind[1]; b = ind[2]
-      sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) * theta(v_tau, a, b) ) ) / sum( apply(ctau, 1, function(v_tau) varphi(v_tau, a) ) )
-    }) )
-    part = COMB[,to_merge]
-    partitions[[k-1]] = b_absorbes_a(partitions[[k]], part['a'], part['b'] )
-    ctau[,part['b']] = ctau[,part['a']] + ctau[,part['b']]
-    ctau  = ctau[,-part['a']]
-=======
+
 #' 
 #' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
@@ -64,7 +37,7 @@ get_hierarchical_partition <- function(tau, omega, lambda) {
     partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
     ctau <- ctau[, -part["a"]]
->>>>>>> simple
+
   }
   class(partitions) <- "hpartition"
   partitions
