@@ -1,3 +1,3 @@
-#' @useDynLib mixpaack
-#' @importFrom Rcpp evalCpp
+#' @useDynLib mixpack
+#' @importFrom Rcpp sourceCpp
 NULL
