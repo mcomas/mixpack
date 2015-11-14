@@ -152,13 +152,22 @@ List mergeStep(NumericMatrix post,
 //' Merging components step
 //' 
 //' @param post Matrix with the posterior probabilities
+//' @return partition using prop and codaNorm
 //' @export
 // [[Rcpp::export]]
 List mergeStep_prop_codaNorm(NumericMatrix post){
   return( mergeStep(post, omega_prop, lambda_codaNorm) );
 }
 
-
+//' Merging components step
+//' 
+//' @param post Matrix with the posterior probabilities
+//' @return partition using const and entropy
+//' @export
+// [[Rcpp::export]]
+List mergeStep_const_entropy(NumericMatrix post){
+  return( mergeStep(post, omega_const, lambda_entropy) );
+}
 
 // [[Rcpp::export]]
 double confusion_prop_codaNorm(NumericMatrix post, int a, int b){

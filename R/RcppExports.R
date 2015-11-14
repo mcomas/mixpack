@@ -44,9 +44,19 @@ mergeComponents <- function(post, a, b) {
 #' Merging components step
 #' 
 #' @param post Matrix with the posterior probabilities
+#' @return partition using prop and codaNorm
 #' @export
 mergeStep_prop_codaNorm <- function(post) {
     .Call('mixpack_mergeStep_prop_codaNorm', PACKAGE = 'mixpack', post)
+}
+
+#' Merging components step
+#' 
+#' @param post Matrix with the posterior probabilities
+#' @return partition using const and entropy
+#' @export
+mergeStep_const_entropy <- function(post) {
+    .Call('mixpack_mergeStep_const_entropy', PACKAGE = 'mixpack', post)
 }
 
 confusion_prop_codaNorm <- function(post, a, b) {

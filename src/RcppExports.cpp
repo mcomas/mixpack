@@ -146,6 +146,17 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// mergeStep_const_entropy
+List mergeStep_const_entropy(NumericMatrix post);
+RcppExport SEXP mixpack_mergeStep_const_entropy(SEXP postSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
+    __result = Rcpp::wrap(mergeStep_const_entropy(post));
+    return __result;
+END_RCPP
+}
 // confusion_prop_codaNorm
 double confusion_prop_codaNorm(NumericMatrix post, int a, int b);
 RcppExport SEXP mixpack_confusion_prop_codaNorm(SEXP postSEXP, SEXP aSEXP, SEXP bSEXP) {
