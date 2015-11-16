@@ -115,6 +115,7 @@ dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = T) {
     dmn
   }
 }
+
 #' Density function of specified gaussian mixture model.
 #' 
 #' The parameters are defined from the parameters obtained using other 

@@ -10,6 +10,7 @@
 #' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 #' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
 #' probabities \code{v_tau} to class \code{a}
+
 #' 
 #' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
@@ -36,6 +37,7 @@ get_hierarchical_partition <- function(tau, omega, lambda) {
     partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
     ctau <- ctau[, -part["a"]]
+
   }
   class(partitions) <- "hpartition"
   partitions

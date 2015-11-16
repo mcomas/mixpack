@@ -21,14 +21,14 @@ ilr_basis <- function(D) {
 #' @param X compositional sample
 #' @export
 ilr_coordinates <- function(X) {
-  D <- ncol(X)
+  D <- NCOL(X)
   r <- data.frame(do.call("cbind", lapply(1:(D - 1), function(i) {
     if (i == 1) {
-      XN <- matrix(X[, 1], ncol = 1)
+      XN <- X[1]
     } else {
-      XN <- X[, 1:i]
+      XN <- X[1:i]
     }
-    as.numeric(sqrt(i/(i + 1)) * log(apply(XN, 1, prod)^(1/i)/X[, i + 1]))
+    as.numeric(sqrt(i/(i + 1)) * log(apply(XN, 1, prod)^(1/i)/X[[i + 1]]))
   })))
   names(r) <- paste("coord", 1:(D - 1), sep = ".")
   r
