@@ -4,7 +4,7 @@
 \alias{dmixnorm}
 \title{Density function of specified gaussian mixture model.}
 \usage{
-dmixnorm(x, Pi, Mu, S, part = 1:length(Pi))
+dmixnorm(x, Pi, Mu, S, part = 1:length(Pi), closure = T)
 }
 \arguments{
 \item{x}{vector/matrix where density function is evaluated}

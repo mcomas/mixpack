@@ -139,7 +139,7 @@ NumericMatrix mergingMatrix(int m, int a, int b){
   return(mergingM);
 }
 
-List mergeStep(NumericMatrix post, 
+List _mergeStep_(NumericMatrix post, 
                double (*omega)(NumericVector, int, int), 
                double (*lambda)(NumericVector, int, int)){
   List out(3);
@@ -149,6 +149,43 @@ List mergeStep(NumericMatrix post,
   return(out);
 }
 
+unsigned int str2int(const char* str, int h = 0){
+  return !str[h] ? 5381 : (str2int(str, h+1)*33) ^ str[h];
+}
+
+//' Merging components step
+//' 
+//' @param post Matrix with the posterior probabilities
+//' @param omega omega function name
+//' @param lambda lambda function name
+//' @return partition using prop and codaNorm
+//' @export
+// [[Rcpp::export]]
+List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"){
+  double (*fomega)(NumericVector, int, int);
+  double (*flambda)(NumericVector, int, int);
+  if( omega == "const" ){
+    fomega = omega_const;
+  }else if(omega == "prop"){
+    fomega = omega_prop;
+  }else if(omega == "dich"){
+    fomega = omega_dich;
+  }
+  if( lambda == "entropy" ){
+    flambda = lambda_entropy;
+  }else if(lambda == "demp"){
+    flambda = lambda_demp;
+  }else if(lambda == "dempMod"){
+    flambda = lambda_dempMod;
+  }else if(lambda == "coda"){
+    flambda = lambda_coda;
+  }else if(lambda == "codaNorm"){
+    flambda = lambda_codaNorm;
+  }else if(lambda == "prop"){
+    flambda = lambda_prop;
+  }
+  return( _mergeStep_(post, fomega, flambda) );
+}
 
 //' Merging components step
 //' 
@@ -157,7 +194,7 @@ List mergeStep(NumericMatrix post,
 //' @export
 // [[Rcpp::export]]
 List mergeStep_prop_codaNorm(NumericMatrix post){
-  return( mergeStep(post, omega_prop, lambda_codaNorm) );
+  return( _mergeStep_(post, omega_prop, lambda_codaNorm) );
 }
 
 //' Merging components step

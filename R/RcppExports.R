@@ -44,6 +44,17 @@ mergeComponents <- function(post, a, b) {
 #' Merging components step
 #' 
 #' @param post Matrix with the posterior probabilities
+#' @param omega omega function name
+#' @param lambda lambda function name
+#' @return partition using prop and codaNorm
+#' @export
+mergeStep <- function(post, omega = "prop", lambda = "coda") {
+    .Call('mixpack_mergeStep', PACKAGE = 'mixpack', post, omega, lambda)
+}
+
+#' Merging components step
+#' 
+#' @param post Matrix with the posterior probabilities
 #' @return partition using prop and codaNorm
 #' @export
 mergeStep_prop_codaNorm <- function(post) {
