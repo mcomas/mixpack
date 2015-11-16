@@ -5,7 +5,8 @@ using namespace Rcpp;
 
 
 double xlog(double x){
-  return( x * log(x) );
+  if(x == 0) return(0);
+  else return( x * log(x) );
 }
 
 // [[Rcpp::export]]
