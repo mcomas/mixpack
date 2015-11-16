@@ -143,7 +143,7 @@ List mergeStep(NumericMatrix post,
                double (*omega)(NumericVector, int, int), 
                double (*lambda)(NumericVector, int, int)){
   List out(3);
-  NumericVector v = optimum(post, omega_prop, lambda_codaNorm);
+  NumericVector v = optimum(post, omega, lambda);
   out[0] = mergingMatrix(post.cols(), v(0), v(1));
   out[1] = mergeComponents(post, v(0), v(1));
   return(out);
