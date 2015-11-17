@@ -154,7 +154,7 @@ List _mergeStep_(NumericMatrix post,
 double (*get_omega(String omega))(NumericVector, int, int) {
   double (*fomega)(NumericVector, int, int) = NULL;
   
-  if( omega == "const" ){
+  if( omega == "cnst" ){
     fomega = omega_const;
   }else if(omega == "prop"){
     fomega = omega_prop;
@@ -230,7 +230,7 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
       for(int i=0;i<LEVEL;i++) if( comb_level(i,j) == 1 ) vec.push_back(i+1);
       l_lvl(j) = wrap(vec);
     }
-    hp(l) = l_lvl;
+    hp(LEVEL-l-1) = l_lvl;
     
     NumericVector v = optimum( post_level, fomega, flambda );
 
