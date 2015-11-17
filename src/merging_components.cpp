@@ -152,7 +152,7 @@ List _mergeStep_(NumericMatrix post,
 }
 
 double (*get_omega(String omega))(NumericVector, int, int) {
-  double (*fomega)(NumericVector, int, int);
+  double (*fomega)(NumericVector, int, int) = NULL;
   
   if( omega == "const" ){
     fomega = omega_const;
@@ -165,7 +165,7 @@ double (*get_omega(String omega))(NumericVector, int, int) {
 }
 
 double (*get_lambda(String lambda))(NumericVector, int, int) {
-  double (*flambda)(NumericVector, int, int);
+  double (*flambda)(NumericVector, int, int) = NULL;
   
   if( lambda == "entropy" ){
     flambda = lambda_entropy;
