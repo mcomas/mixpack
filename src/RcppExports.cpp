@@ -209,3 +209,16 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// get_hierarchical_partition_fast
+List get_hierarchical_partition_fast(NumericMatrix post, String omega, String lambda);
+RcppExport SEXP mixpack_get_hierarchical_partition_fast(SEXP postSEXP, SEXP omegaSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
+    Rcpp::traits::input_parameter< String >::type omega(omegaSEXP);
+    Rcpp::traits::input_parameter< String >::type lambda(lambdaSEXP);
+    __result = Rcpp::wrap(get_hierarchical_partition_fast(post, omega, lambda));
+    return __result;
+END_RCPP
+}

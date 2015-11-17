@@ -153,17 +153,9 @@ unsigned int str2int(const char* str, int h = 0){
   return !str[h] ? 5381 : (str2int(str, h+1)*33) ^ str[h];
 }
 
-//' Merging components step
-//' 
-//' @param post Matrix with the posterior probabilities
-//' @param omega omega function name
-//' @param lambda lambda function name
-//' @return partition using prop and codaNorm
-//' @export
-// [[Rcpp::export]]
-List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"){
+double (*get_omega(String omega))(NumericVector, int, int) {
   double (*fomega)(NumericVector, int, int);
-  double (*flambda)(NumericVector, int, int);
+  
   if( omega == "const" ){
     fomega = omega_const;
   }else if(omega == "prop"){
@@ -171,6 +163,12 @@ List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"
   }else if(omega == "dich"){
     fomega = omega_dich;
   }
+  return(fomega);
+}
+
+double (*get_lambda(String lambda))(NumericVector, int, int) {
+  double (*flambda)(NumericVector, int, int);
+  
   if( lambda == "entropy" ){
     flambda = lambda_entropy;
   }else if(lambda == "demp"){
@@ -184,7 +182,18 @@ List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"
   }else if(lambda == "prop"){
     flambda = lambda_prop;
   }
-  return( _mergeStep_(post, fomega, flambda) );
+  return(flambda);
+}
+//' Merging components step
+//' 
+//' @param post Matrix with the posterior probabilities
+//' @param omega omega function name
+//' @param lambda lambda function name
+//' @return partition using prop and codaNorm
+//' @export
+// [[Rcpp::export]]
+List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"){
+  return( _mergeStep_(post, get_omega(omega), get_lambda(lambda)) );
 }
 
 //' Merging components step
@@ -220,5 +229,36 @@ double confusion_const_entropy(NumericMatrix post, int a, int b){
 // [[Rcpp::export]]
 double confusion_prop_demp(NumericMatrix post, int a, int b){
   return( confusion(post, a, b, omega_prop, lambda_demp) );
+}
+
+
+//' Build a hierchical partition from posterior probabilities
+//' 
+//' This function applies the methodology described in [citar article]
+//' to build a hierarchy of classes using the weights or probabilities 
+//' that an element belongs to each class
+//' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
+//' 
+//' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+//' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
+//'\code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
+//' probabities \code{v_tau} to class \code{a}
+//' 
+//' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+//' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
+//' are classes to be combined.
+//' @export
+// [[Rcpp::export]]
+List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", String lambda = "coda"){
+  int LEVEL = post.cols();
+  List hp(LEVEL);
+  for(int lvl=LEVEL,i=0;0<lvl;lvl--,i++){
+    List l_lvl(lvl);
+    for(int j=0;j<lvl;j++){
+      l_lvl(j) = j;
+    }
+    hp(i) = l_lvl;
+  }
+  return(hp);
 }
 
