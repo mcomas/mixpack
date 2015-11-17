@@ -167,15 +167,15 @@ double (*get_omega(String omega))(NumericVector, int, int) {
 double (*get_lambda(String lambda))(NumericVector, int, int) {
   double (*flambda)(NumericVector, int, int) = NULL;
   
-  if( lambda == "entropy" ){
+  if( lambda == "entr" ){
     flambda = lambda_entropy;
   }else if(lambda == "demp"){
     flambda = lambda_demp;
-  }else if(lambda == "dempMod"){
+  }else if(lambda == "demp.mod"){
     flambda = lambda_dempMod;
   }else if(lambda == "coda"){
     flambda = lambda_coda;
-  }else if(lambda == "codaNorm"){
+  }else if(lambda == "coda.norm"){
     flambda = lambda_codaNorm;
   }else if(lambda == "prop"){
     flambda = lambda_prop;
