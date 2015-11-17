@@ -221,6 +221,7 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
   for(int lvl=LEVEL,i=0;0<lvl;lvl--,i++){
     NumericVector v = optimum(post, get_omega(omega), get_lambda(lambda));
     arma::mat comb = Rcpp::as<arma::mat>(mergingMatrix(post.cols(), v(0), v(1)));
+    post = mergeComponents(post, v(0), v(1));
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
       l_lvl(j) = j;
