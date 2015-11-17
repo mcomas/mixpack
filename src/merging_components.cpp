@@ -237,7 +237,9 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
     post_level = mergeComponents(post_level, v(0), v(1));
     comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );
   }
-  
+  std::vector<int> vec;
+  for(int i=0;i<LEVEL;i++) vec.push_back(i+1);
+  hp(0) = wrap(vec);
   return(hp);
 }
 
