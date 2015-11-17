@@ -52,36 +52,6 @@ mergeStep <- function(post, omega = "prop", lambda = "coda") {
     .Call('mixpack_mergeStep', PACKAGE = 'mixpack', post, omega, lambda)
 }
 
-#' Merging components step
-#' 
-#' @param post Matrix with the posterior probabilities
-#' @return partition using prop and codaNorm
-#' @export
-mergeStep_prop_codaNorm <- function(post) {
-    .Call('mixpack_mergeStep_prop_codaNorm', PACKAGE = 'mixpack', post)
-}
-
-#' Merging components step
-#' 
-#' @param post Matrix with the posterior probabilities
-#' @return partition using const and entropy
-#' @export
-mergeStep_const_entropy <- function(post) {
-    .Call('mixpack_mergeStep_const_entropy', PACKAGE = 'mixpack', post)
-}
-
-confusion_prop_codaNorm <- function(post, a, b) {
-    .Call('mixpack_confusion_prop_codaNorm', PACKAGE = 'mixpack', post, a, b)
-}
-
-confusion_const_entropy <- function(post, a, b) {
-    .Call('mixpack_confusion_const_entropy', PACKAGE = 'mixpack', post, a, b)
-}
-
-confusion_prop_demp <- function(post, a, b) {
-    .Call('mixpack_confusion_prop_demp', PACKAGE = 'mixpack', post, a, b)
-}
-
 #' Build a hierchical partition from posterior probabilities
 #' 
 #' This function applies the methodology described in [citar article]

@@ -1,4 +1,6 @@
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppArmadillo)]]
+
+#include <RcppArmadillo.h>
 #include <limits>
 
 using namespace Rcpp;
@@ -149,10 +151,6 @@ List _mergeStep_(NumericMatrix post,
   return(out);
 }
 
-unsigned int str2int(const char* str, int h = 0){
-  return !str[h] ? 5381 : (str2int(str, h+1)*33) ^ str[h];
-}
-
 double (*get_omega(String omega))(NumericVector, int, int) {
   double (*fomega)(NumericVector, int, int);
   
@@ -184,6 +182,7 @@ double (*get_lambda(String lambda))(NumericVector, int, int) {
   }
   return(flambda);
 }
+
 //' Merging components step
 //' 
 //' @param post Matrix with the posterior probabilities
@@ -194,41 +193,6 @@ double (*get_lambda(String lambda))(NumericVector, int, int) {
 // [[Rcpp::export]]
 List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"){
   return( _mergeStep_(post, get_omega(omega), get_lambda(lambda)) );
-}
-
-//' Merging components step
-//' 
-//' @param post Matrix with the posterior probabilities
-//' @return partition using prop and codaNorm
-//' @export
-// [[Rcpp::export]]
-List mergeStep_prop_codaNorm(NumericMatrix post){
-  return( _mergeStep_(post, omega_prop, lambda_codaNorm) );
-}
-
-//' Merging components step
-//' 
-//' @param post Matrix with the posterior probabilities
-//' @return partition using const and entropy
-//' @export
-// [[Rcpp::export]]
-List mergeStep_const_entropy(NumericMatrix post){
-  return( mergeStep(post, omega_const, lambda_entropy) );
-}
-
-// [[Rcpp::export]]
-double confusion_prop_codaNorm(NumericMatrix post, int a, int b){
-  return( confusion(post, a, b, omega_prop, lambda_codaNorm) );
-}
-  
-// [[Rcpp::export]]
-double confusion_const_entropy(NumericMatrix post, int a, int b){
-  return( confusion(post, a, b, omega_const, lambda_entropy) );
-}
-
-// [[Rcpp::export]]
-double confusion_prop_demp(NumericMatrix post, int a, int b){
-  return( confusion(post, a, b, omega_prop, lambda_demp) );
 }
 
 
@@ -252,12 +216,17 @@ double confusion_prop_demp(NumericMatrix post, int a, int b){
 List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", String lambda = "coda"){
   int LEVEL = post.cols();
   List hp(LEVEL);
+  
+  arma::mat comb_prev = arma::eye(LEVEL, LEVEL);
   for(int lvl=LEVEL,i=0;0<lvl;lvl--,i++){
+    NumericVector v = optimum(post, get_omega(omega), get_lambda(lambda));
+    arma::mat comb = Rcpp::as<arma::mat>(mergingMatrix(post.cols(), v(0), v(1)));
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
       l_lvl(j) = j;
     }
     hp(i) = l_lvl;
+    comb_prev *= comb;
   }
   return(hp);
 }

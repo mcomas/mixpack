@@ -10,7 +10,7 @@ Description: Mixture package is intended to facilitate working with mixture of d
     clusters are obtained.
 Depends: R (>= 3.0.2)
 Imports: Rcpp (>= 0.11.5), mvtnorm
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 Suggests: mclust, Rmixmod, knitr
 License: GPL
 LazyData: true
