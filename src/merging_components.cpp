@@ -217,18 +217,27 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
   int LEVEL = post.cols();
   List hp(LEVEL);
   
-  arma::mat comb_prev = arma::eye(LEVEL, LEVEL);
-  for(int lvl=LEVEL,i=0;0<lvl;lvl--,i++){
-    NumericVector v = optimum(post, get_omega(omega), get_lambda(lambda));
-    arma::mat comb = Rcpp::as<arma::mat>(mergingMatrix(post.cols(), v(0), v(1)));
-    post = mergeComponents(post, v(0), v(1));
+  double (*flambda)(NumericVector, int, int) = get_lambda(lambda);
+  double (*fomega)(NumericVector, int, int) = get_omega(omega);
+  
+  arma::mat comb_level = arma::eye(LEVEL, LEVEL);
+  NumericMatrix post_level = NumericMatrix(post);
+  
+  for(int lvl=LEVEL,l=0;1<lvl;lvl--,l++){
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
-      l_lvl(j) = j;
+      std::vector<int> vec;
+      for(int i=0;i<LEVEL;i++) if( comb_level(i,j) == 1 ) vec.push_back(i+1);
+      l_lvl(j) = wrap(vec);
     }
-    hp(i) = l_lvl;
-    comb_prev *= comb;
+    hp(l) = l_lvl;
+    
+    NumericVector v = optimum( post_level, fomega, flambda );
+
+    post_level = mergeComponents(post_level, v(0), v(1));
+    comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );
   }
+  
   return(hp);
 }
 
