@@ -41,6 +41,10 @@ mergeComponents <- function(post, a, b) {
     .Call('mixpack_mergeComponents', PACKAGE = 'mixpack', post, a, b)
 }
 
+mergeComponents_mult <- function(post, a, b) {
+    .Call('mixpack_mergeComponents_mult', PACKAGE = 'mixpack', post, a, b)
+}
+
 #' Merging components step
 #' 
 #' @param post Matrix with the posterior probabilities
@@ -70,5 +74,25 @@ mergeStep <- function(post, omega = "prop", lambda = "coda") {
 #' @export
 get_hierarchical_partition_fast <- function(post, omega = "prop", lambda = "coda") {
     .Call('mixpack_get_hierarchical_partition_fast', PACKAGE = 'mixpack', post, omega, lambda)
+}
+
+#' Build a hierchical partition from posterior probabilities
+#' 
+#' This function applies the methodology described in [citar article]
+#' to build a hierarchy of classes using the weights or probabilities 
+#' that an element belongs to each class
+#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
+#' 
+#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
+#'\code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
+#' probabities \code{v_tau} to class \code{a}
+#' 
+#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
+#' are classes to be combined.
+#' @export
+get_hierarchical_partition_mult_fast <- function(post, omega = "prop", lambda = "coda") {
+    .Call('mixpack_get_hierarchical_partition_mult_fast', PACKAGE = 'mixpack', post, omega, lambda)
 }
 

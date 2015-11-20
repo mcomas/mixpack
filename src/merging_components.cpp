@@ -120,6 +120,30 @@ NumericMatrix mergeComponents(NumericMatrix post, int a, int b){
   return(mergeM);
 }
 
+// [[Rcpp::export]]
+NumericMatrix mergeComponents_mult(NumericMatrix post, int a, int b){
+  int m = post.cols();
+  int n = post.rows();
+  int min_ab = std::min(a,b);
+  int max_ab = std::max(a,b);
+  NumericMatrix mergeM(post.rows(), post.cols()-1);
+  if(a < m && b < m){
+    int I = 0;
+    for(int i=0; i<min_ab; i++, I++){
+      for(int j=0; j<n; j++) mergeM(j,I) = post(j,i);
+    }
+    for(int j=0; j<n; j++) mergeM(j,I) = post(j,a) * post(j,b);
+    I++;
+    for(int i=min_ab+1; i<max_ab; i++, I++){
+      for(int j=0; j<n; j++) mergeM(j,I) = post(j,i);
+    }
+    for(int i=max_ab+1; i<m; i++, I++){
+      for(int j=0; j<n; j++) mergeM(j,I) = post(j,i);
+    }
+  }
+  return(mergeM);
+}
+
 NumericMatrix mergingMatrix(int m, int a, int b){
   int min_ab = std::min(a,b);
   int max_ab = std::max(a,b);
@@ -235,6 +259,51 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
     NumericVector v = optimum( post_level, fomega, flambda );
 
     post_level = mergeComponents(post_level, v(0), v(1));
+    comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );
+  }
+  
+  return(hp);
+}
+
+//' Build a hierchical partition from posterior probabilities
+//' 
+//' This function applies the methodology described in [citar article]
+//' to build a hierarchy of classes using the weights or probabilities 
+//' that an element belongs to each class
+//' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
+//' 
+//' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+//' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
+//'\code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
+//' probabities \code{v_tau} to class \code{a}
+//' 
+//' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+//' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
+//' are classes to be combined.
+//' @export
+// [[Rcpp::export]]
+List get_hierarchical_partition_mult_fast(NumericMatrix post, String omega = "prop", String lambda = "coda"){
+  int LEVEL = post.cols();
+  List hp(LEVEL);
+  
+  double (*flambda)(NumericVector, int, int) = get_lambda(lambda);
+  double (*fomega)(NumericVector, int, int) = get_omega(omega);
+  
+  arma::mat comb_level = arma::eye(LEVEL, LEVEL);
+  NumericMatrix post_level = NumericMatrix(post);
+  
+  for(int lvl=LEVEL,l=0;1<lvl;lvl--,l++){
+    List l_lvl(lvl);
+    for(int j=0;j<lvl;j++){
+      std::vector<int> vec;
+      for(int i=0;i<LEVEL;i++) if( comb_level(i,j) == 1 ) vec.push_back(i+1);
+      l_lvl(j) = wrap(vec);
+    }
+    hp(l) = l_lvl;
+    
+    NumericVector v = optimum( post_level, fomega, flambda );
+    
+    post_level = mergeComponents_mult(post_level, v(0), v(1));
     comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );
   }
   

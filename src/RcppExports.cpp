@@ -136,6 +136,19 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// mergeComponents_mult
+NumericMatrix mergeComponents_mult(NumericMatrix post, int a, int b);
+RcppExport SEXP mixpack_mergeComponents_mult(SEXP postSEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
+    Rcpp::traits::input_parameter< int >::type a(aSEXP);
+    Rcpp::traits::input_parameter< int >::type b(bSEXP);
+    __result = Rcpp::wrap(mergeComponents_mult(post, a, b));
+    return __result;
+END_RCPP
+}
 // mergeStep
 List mergeStep(NumericMatrix post, String omega, String lambda);
 RcppExport SEXP mixpack_mergeStep(SEXP postSEXP, SEXP omegaSEXP, SEXP lambdaSEXP) {
@@ -159,6 +172,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< String >::type omega(omegaSEXP);
     Rcpp::traits::input_parameter< String >::type lambda(lambdaSEXP);
     __result = Rcpp::wrap(get_hierarchical_partition_fast(post, omega, lambda));
+    return __result;
+END_RCPP
+}
+// get_hierarchical_partition_mult_fast
+List get_hierarchical_partition_mult_fast(NumericMatrix post, String omega, String lambda);
+RcppExport SEXP mixpack_get_hierarchical_partition_mult_fast(SEXP postSEXP, SEXP omegaSEXP, SEXP lambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
+    Rcpp::traits::input_parameter< String >::type omega(omegaSEXP);
+    Rcpp::traits::input_parameter< String >::type lambda(lambdaSEXP);
+    __result = Rcpp::wrap(get_hierarchical_partition_mult_fast(post, omega, lambda));
     return __result;
 END_RCPP
 }
