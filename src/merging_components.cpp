@@ -3,6 +3,9 @@
 #include <RcppArmadillo.h>
 #include <limits>
 
+// Enable C++11 via this plugin (Rcpp 0.10.3 or later)
+// [[Rcpp::plugins(cpp11)]]
+
 using namespace Rcpp;
 
 
@@ -35,7 +38,10 @@ double lambda_coda(NumericVector v_tau, int a, int b) {
 
 // [[Rcpp::export]]
 double lambda_codaNorm(NumericVector v_tau, int a, int b) {
-  return( -pow(log(v_tau[b] / v_tau[a]), 2) );
+  double logA = log(v_tau[a]);
+  double logB = log(v_tau[b]);
+  return(2 * logA * logB -logB*logB - logA * logA);
+  //return( -pow(log(v_tau[b] / v_tau[a]), 2) );
 }
 
 // [[Rcpp::export]]
@@ -176,9 +182,8 @@ List _mergeStep_(NumericMatrix post,
 }
 
 double (*get_omega(String omega))(NumericVector, int, int) {
-  double (*fomega)(NumericVector, int, int);
-  
-  if( omega == "const" ){
+  double (*fomega)(NumericVector, int, int) = NULL;
+  if( omega == "cnst" ){
     fomega = omega_const;
   }else if(omega == "prop"){
     fomega = omega_prop;
@@ -189,17 +194,17 @@ double (*get_omega(String omega))(NumericVector, int, int) {
 }
 
 double (*get_lambda(String lambda))(NumericVector, int, int) {
-  double (*flambda)(NumericVector, int, int);
+  double (*flambda)(NumericVector, int, int) = NULL;
   
-  if( lambda == "entropy" ){
+  if( lambda == "entr" ){
     flambda = lambda_entropy;
   }else if(lambda == "demp"){
     flambda = lambda_demp;
-  }else if(lambda == "dempMod"){
+  }else if(lambda == "demp.mod"){
     flambda = lambda_dempMod;
   }else if(lambda == "coda"){
     flambda = lambda_coda;
-  }else if(lambda == "codaNorm"){
+  }else if(lambda == "coda.norm"){
     flambda = lambda_codaNorm;
   }else if(lambda == "prop"){
     flambda = lambda_prop;
@@ -247,21 +252,26 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
   arma::mat comb_level = arma::eye(LEVEL, LEVEL);
   NumericMatrix post_level = NumericMatrix(post);
   
+  NumericVector v;
+  Rcout << LEVEL << std::endl;
   for(int lvl=LEVEL,l=0;1<lvl;lvl--,l++){
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
-      std::vector<int> vec;
+      std::vector<double> vec;
       for(int i=0;i<LEVEL;i++) if( comb_level(i,j) == 1 ) vec.push_back(i+1);
       l_lvl(j) = wrap(vec);
     }
-    hp(l) = l_lvl;
-    
-    NumericVector v = optimum( post_level, fomega, flambda );
-
-    post_level = mergeComponents(post_level, v(0), v(1));
-    comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );
+    int cur = LEVEL-l-1;
+    hp(cur) = l_lvl;
+    if(cur == 1) break;
+    v = optimum( post_level, fomega, flambda );
+    post_level = mergeComponents(post_level, v[0], v[1]);
+    comb_level = comb_level * Rcpp::as<arma::mat>( mergingMatrix(lvl, v[0], v[1]) );
   }
   
+  std::vector<double> vec(0);
+  for(int i=0;i<LEVEL;i++) vec.push_back(i+1);
+  hp(0) = wrap(vec);
   return(hp);
 }
 
