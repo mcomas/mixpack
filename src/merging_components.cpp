@@ -253,7 +253,6 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
   NumericMatrix post_level = NumericMatrix(post);
   
   NumericVector v;
-  Rcout << LEVEL << std::endl;
   for(int lvl=LEVEL,l=0;1<lvl;lvl--,l++){
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
