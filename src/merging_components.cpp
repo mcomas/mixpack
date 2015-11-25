@@ -270,7 +270,9 @@ List get_hierarchical_partition_fast(NumericMatrix post, String omega = "prop", 
   
   std::vector<double> vec(0);
   for(int i=0;i<LEVEL;i++) vec.push_back(i+1);
-  hp(0) = wrap(vec);
+  List l_lvl(1);
+  l_lvl(0) = wrap(vec);
+  hp(0) = l_lvl;
   return(hp);
 }
 
