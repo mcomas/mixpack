@@ -73,7 +73,17 @@ mergeStep <- function(post, omega = "prop", lambda = "coda") {
 #' are classes to be combined.
 #' @export
 get_hierarchical_partition_fast <- function(post, omega = "prop", lambda = "coda") {
-    .Call('mixpack_get_hierarchical_partition_fast', PACKAGE = 'mixpack', post, omega, lambda)
+  if(!omega %in% c('cnst', 'prop', 'dich')){
+    stop(sprintf("Weight %s not available", omega))
+  }
+  if(!lambda %in% c('entr', 'demp', 'demp.mod', 'coda', 'coda.norm', 'prop')){
+    stop(sprintf("Weight %s not available", lambda))
+  }
+  if((num<-sum(post == 0)) > 0){
+    warning(sprintf("%d zeros were replaced by minimum machine number %e", num, .Machine$double.xmin))
+    post[post == 0] = .Machine$double.xmin
+  }
+  .Call('mixpack_get_hierarchical_partition_fast', PACKAGE = 'mixpack', post, omega, lambda)
 }
 
 #' Build a hierchical partition from posterior probabilities
