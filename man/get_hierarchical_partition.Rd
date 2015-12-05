@@ -4,11 +4,9 @@
 \alias{get_hierarchical_partition}
 \title{Build a hierchical partition from posterior probabilities}
 \usage{
-get_hierarchical_partition(tau, omega, lambda)
+get_hierarchical_partition(post, omega = "prop", lambda = "coda")
 }
 \arguments{
-\item{tau}{dataframe of probabilities/weights (\code{tau} must be strictly positive)}
-
 \item{omega}{function with two parameters (\code{v_tau}, \code{a}). Parameter 
 \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
@@ -17,6 +15,8 @@ probabities \code{v_tau} to class \code{a}}
 \item{lambda}{function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 are classes to be combined.}
+
+\item{tau}{dataframe of probabilities/weights (\code{tau} must be strictly positive)}
 }
 \description{
 This function applies the methodology described in [citar article]

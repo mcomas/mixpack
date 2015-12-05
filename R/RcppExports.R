@@ -56,34 +56,8 @@ mergeStep <- function(post, omega = "prop", lambda = "coda") {
     .Call('mixpack_mergeStep', PACKAGE = 'mixpack', post, omega, lambda)
 }
 
-#' Build a hierchical partition from posterior probabilities
-#' 
-#' This function applies the methodology described in [citar article]
-#' to build a hierarchy of classes using the weights or probabilities 
-#' that an element belongs to each class
-#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
-#' 
-#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
-#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
-#'\code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
-#' probabities \code{v_tau} to class \code{a}
-#' 
-#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
-#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
-#' are classes to be combined.
-#' @export
-get_hierarchical_partition_fast <- function(post, omega = "prop", lambda = "coda") {
-  if(!omega %in% c('cnst', 'prop', 'dich')){
-    stop(sprintf("Weight %s not available", omega))
-  }
-  if(!lambda %in% c('entr', 'demp', 'demp.mod', 'coda', 'coda.norm', 'prop')){
-    stop(sprintf("Weight %s not available", lambda))
-  }
-  if((num<-sum(post == 0)) > 0){
-    warning(sprintf("%d zeros were replaced by minimum machine number %e", num, .Machine$double.xmin))
-    post[post == 0] = .Machine$double.xmin
-  }
-  .Call('mixpack_get_hierarchical_partition_fast', PACKAGE = 'mixpack', post, omega, lambda)
+get_hierarchical_partition_cpp <- function(post, omega = "prop", lambda = "coda") {
+    .Call('mixpack_get_hierarchical_partition_cpp', PACKAGE = 'mixpack', post, omega, lambda)
 }
 
 #' Build a hierchical partition from posterior probabilities
