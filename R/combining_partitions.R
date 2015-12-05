@@ -5,17 +5,51 @@
 #' that an element belongs to each class
 #' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
 #' 
-#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+#' @param omega String giving the function name used to build the hierarchy. Available 
+#' functions are: entr, prop, dich
+#' 
+#' @param lambda String giving the function name used to build the hierarchy. Available 
+#' functions are: entr, demp, demp.mod, coda, coda.norm, prop
+#' 
+#' @param f_omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
 #' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 #' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
 #' probabities \code{v_tau} to class \code{a}
-
 #' 
-#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+#' @param f_lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 #' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 #' are classes to be combined.
 #' @export
-get_hierarchical_partition <- function(post, omega = "prop", lambda = "coda") {
+get_hierarchical_partition <- function(post, omega, lambda, f_omega = NULL, f_lambda = NULL) {
+  if( !missing(omega) & !missing(lambda) ){
+    get_hierarchical_partition_cpp(post, omega, lambda)
+  }else{
+    if(is.null(f_omega) | is.null(f_lambda)){
+      stop("Either omega and lambda or f_omega and f_lambda need to be defined")
+    }
+    if(!is.function(f_omega) | !is.function(f_lambda)){
+      stop("Both f_omega and f_lambda needs to be a function")
+    }
+    if(length(formals(f_omega)) != 2){
+      stop("f_omega needs two parameters. Probability vector and one position")
+    }
+    if(length(formals(f_lambda)) != 3){
+      stop("f_lambda needs two parameters. Probability vector and two positions")
+    }
+    f_res = f_omega(c(0.5,0.5), 1)
+    if(!is.numeric(f_res) & length(f_res) == 1){
+      stop("f_omega needs to return a single number")
+    }
+    f_res = f_lambda(c(0.5,0.5), 1, 2)
+    if(!is.numeric(f_res) & length(f_res) == 1){
+      stop("f_lambda needs to return a single number")
+    }
+    get_hierarchical_partition_generic(tau, f_omega, f_lambda)
+  }
+}
+
+
+get_hierarchical_partition_cpp <- function(post, omega, lambda) {
   if(!omega %in% c('cnst', 'prop', 'dich')){
     stop(sprintf("Omega function %s is not available", omega))
   }
@@ -33,23 +67,6 @@ get_hierarchical_partition <- function(post, omega = "prop", lambda = "coda") {
 
 
 
-#' Build a hierchical partition from posterior probabilities
-#' 
-#' This function applies the methodology described in [citar article]
-#' to build a hierarchy of classes using the weights or probabilities 
-#' that an element belongs to each class
-#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
-#' 
-#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
-#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
-#' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
-#' probabities \code{v_tau} to class \code{a}
-
-#' 
-#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
-#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
-#' are classes to be combined.
-#' @export
 get_hierarchical_partition_generic <- function(tau, omega, lambda) {
   ctau <- tau
   K <- ncol(ctau)

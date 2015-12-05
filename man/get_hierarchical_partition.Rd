@@ -4,15 +4,22 @@
 \alias{get_hierarchical_partition}
 \title{Build a hierchical partition from posterior probabilities}
 \usage{
-get_hierarchical_partition(post, omega = "prop", lambda = "coda")
+get_hierarchical_partition(post, omega, lambda, f_omega = NULL,
+  f_lambda = NULL)
 }
 \arguments{
-\item{omega}{function with two parameters (\code{v_tau}, \code{a}). Parameter 
+\item{omega}{String giving the function name used to build the hierarchy. Available 
+functions are: entr, prop, dich}
+
+\item{lambda}{String giving the function name used to build the hierarchy. Available 
+functions are: entr, demp, demp.mod, coda, coda.norm, prop}
+
+\item{f_omega}{function with two parameters (\code{v_tau}, \code{a}). Parameter 
 \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
 \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
 probabities \code{v_tau} to class \code{a}}
 
-\item{lambda}{function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+\item{f_lambda}{function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 are classes to be combined.}
 
