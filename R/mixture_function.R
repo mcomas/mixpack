@@ -29,11 +29,11 @@
 #'             ## Sigma third component
 #'             0.05, 0,
 #'             0, 0.05), dim = c(2, 2, 3))
-#' X = rmixnorm(100, Pi = Pi, Mu = Mu, S = S, labels = T)
+#' X = rmixnorm(100, Pi = Pi, Mu = Mu, S = S, labels = TRUE)
 #' plot(X[,1:2], col=X[,3])
 #' @export
 rmixnorm <- function(n, Pi, Mu, S, labels = F) {
-  z <- sample(x = 1:length(Pi), size = n, prob = Pi, replace = T)
+  z <- sample(x = 1:length(Pi), size = n, prob = Pi, replace = TRUE)
   rmn <- matrix(0, nrow = n, ncol = nrow(Mu))
   for (i in 1:length(Pi)) {
     n_z <- sum(z == i)

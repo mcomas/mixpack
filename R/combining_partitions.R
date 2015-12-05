@@ -44,7 +44,7 @@ get_hierarchical_partition <- function(post, omega, lambda, f_omega = NULL, f_la
     if(!is.numeric(f_res) & length(f_res) == 1){
       stop("f_lambda needs to return a single number")
     }
-    get_hierarchical_partition_generic(tau, f_omega, f_lambda)
+    get_hierarchical_partition_generic(post, f_omega, f_lambda)
   }
 }
 

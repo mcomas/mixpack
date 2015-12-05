@@ -45,7 +45,7 @@ S = array(c(## Sigma first component
             ## Sigma third component
             0.05, 0,
             0, 0.05), dim = c(2, 2, 3))
-X = rmixnorm(100, Pi = Pi, Mu = Mu, S = S, labels = T)
+X = rmixnorm(100, Pi = Pi, Mu = Mu, S = S, labels = TRUE)
 plot(X[,1:2], col=X[,3])
 }
 
