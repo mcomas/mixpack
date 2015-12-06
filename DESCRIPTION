@@ -1,13 +1,15 @@
 Package: mixpack
 Encoding: utf-8
 Title: Mixture package
-Version: 0.2.4
-URL: http://mcomas.net/mixpack
-Maintainer: Marc Comas-Cufí <marc.comas@gmail.com>
-Author: Marc Comas-Cufí <marc.comas@gmail.com>
-Description: Mixture package is intended to facilitate working with mixture of
-    distributions. It incorporate functions to merge mixture components in such a
-    way that more meaningful clusters are obtained.
+Version: 0.3.0
+Date: 2015-12-06
+Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
+                    email = "mcomas@imae.udg.edu"),
+             person("Josep Antoni", "Martín-Fernández", role = "aut"),
+             person("Glòria", "Mateu-Figueras", role = "aut"))
+URL: http://mcomas.net/software/mixpack
+Description: Mixture package is intended to facilitate the analysis of mixture of
+    distributions.
 Depends:
     R (>= 3.0.2)
 Imports:
@@ -20,5 +22,6 @@ Suggests:
     knitr
 License: GPL
 LazyData: true
+NeedsCompilation: yes
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
