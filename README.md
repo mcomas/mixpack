@@ -7,5 +7,5 @@ mixpack is under construction and therefore, it is not yet available from CRAN, 
 
 ```R
 # install.packages("devtools")
-devtools::install_github('mcomas/mixpack', ref='simple', build_vignettes = TRUE)
+devtools::install_github('mcomas/mixpack')
 ```
