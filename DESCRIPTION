@@ -1,20 +1,21 @@
 Package: mixpack
-Encoding: utf-8
-Title: Mixture package
-Version: 0.3.0
+Encoding: UTF-8
+Title: Tools to work with Mixture Components
+Version: 0.3.1
 Date: 2015-12-06
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"),
              person("Josep Antoni", "Martín-Fernández", role = "aut"),
              person("Glòria", "Mateu-Figueras", role = "aut"))
 URL: http://mcomas.net/software/mixpack
-Description: Mixture package is intended to facilitate the analysis of mixture of
-    distributions.
+Description: mixpack package is a collection of tools implemented to facilitate the analysis of the components of a finite mixture distributions. The package has some functions to generate random samples coming from a finitemixture. The package provides a C++ implementation for the construction of a hierarchy over the components of a given finite mixture.
 Depends:
     R (>= 3.0.2)
 Imports:
     Rcpp (>= 0.11.5),
-    mvtnorm
+    mvtnorm,
+    methods,
+    stats
 LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     mclust,

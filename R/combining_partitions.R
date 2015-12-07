@@ -3,7 +3,7 @@
 #' This function applies the methodology described in [citar article]
 #' to build a hierarchy of classes using the weights or probabilities 
 #' that an element belongs to each class
-#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
+#' @param post dataframe of probabilities/weights (\code{tau} must be strictly positive)
 #' 
 #' @param omega String giving the function name used to build the hierarchy. Available 
 #' functions are: entr, prop, dich
@@ -118,51 +118,6 @@ get_random_hierarchical_partition <- function(K) {
   partitions
 }
 
-#' Build a hierchical partition from posterior probabilities
-#' 
-#' This function applies the methodology described in [citar article]
-#' to build a hierarchy of classes using the weights or probabilities 
-#' that an element belongs to each class
-#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
-#' 
-#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
-#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
-#' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
-#' probabities \code{v_tau} to class \code{a}
-#' 
-#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
-#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
-#' are classes to be combined.
-#' 
-#' Combination is done multiplicatively
-#' 
-#' @export
-get_hierarchical_partition_mult <- function(tau, omega, lambda) {
-  ctau <- tau
-  K <- ncol(ctau)
-  partitions <- list()
-  partitions[[K]] <- as.list(1:K)
-  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
-  for (k in K:2) {
-    COMB <- t(expand.grid(1:k, 1:k))
-    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
-    rownames(COMB) <- c("a", "b")
-    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
-    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
-      a <- ind[1]
-      b <- ind[2]
-      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
-                                                                                                                          a)))
-    }))
-    part <- COMB[, to_merge]
-    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
-    ctau[, part["b"]] <- sqrt(ctau[, part["a"]] * ctau[, part["b"]])
-    ctau <- ctau[, -part["a"]]
-  }
-  class(partitions) <- "hpartition"
-  partitions
-}
-
 part_name <- function(part) sprintf("(%s)", paste(sort(part), collapse = ","))
 
 ## PART B absorbes A. In this function part A is incorporated to B and after that partition A is eliminated
@@ -196,53 +151,3 @@ prop_partition_mult = function(tau, partition)
     if(is.vector(tau[,part])) return(tau[,part])
     apply(tau[,part], 1, prod)^(1/length(part))
   }))
-
-#' Build a hierchical partition from posterior probabilities
-#' 
-#' This function applies the methodology described in [citar article]
-#' to build a hierarchy of classes using the weights or probabilities 
-#' that an element belongs to each class
-#' @param tau dataframe of probabilities/weights (\code{tau} must be strictly positive)
-#' 
-#' @param omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
-#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
-#' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
-#' probabities \code{v_tau} to class \code{a}
-#' 
-#' @param lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
-#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
-#' are classes to be combined.
-#' @param func defines the way components are merged
-#' 
-#' @export
-get_hierarchical_partition_mult_func = function(tau, 
-                                                varphi,# = function( v_tau, a) if(which.max(v_tau) == a) 1 else 0, 
-                                                theta,
-                                                func = function(tau, partition)
-                                                  do.call('cbind', lapply(partition, function(part){
-                                                    if(is.vector(tau[,part])) return(tau[,part])
-                                                    apply(tau[,part], 1, prod)^(1/length(part))
-                                                  }))){# = function(v_tau, a, b) log(v_tau[a] / v_tau[b])^2){
-  ctau <- tau
-  K <- ncol(ctau)
-  partitions <- list()
-  partitions[[K]] <- as.list(1:K)
-  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
-  for (k in K:2) {
-    COMB <- t(expand.grid(1:k, 1:k))
-    COMB <- COMB[, COMB[1, ] != COMB[2, ]]
-    rownames(COMB) <- c("a", "b")
-    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
-    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
-      a <- ind[1]
-      b <- ind[2]
-      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
-                                                                                                                          a)))
-    }))
-    part <- COMB[, to_merge]
-    partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
-    ctau = func(tau, partitions[[k-1]])
-  }
-  class(partitions) <- "hpartition"
-  partitions
-}

@@ -4,7 +4,7 @@
 \alias{dmixnorm}
 \title{Density function of specified gaussian mixture model.}
 \usage{
-dmixnorm(x, Pi, Mu, S, part = 1:length(Pi), closure = T)
+dmixnorm(x, Pi, Mu, S, part = 1:length(Pi), closure = TRUE)
 }
 \arguments{
 \item{x}{vector/matrix where density function is evaluated}
@@ -19,6 +19,8 @@ of each gaussian component}
 
 \item{part}{subcomposition where x shoud be evaluated. Take into an account that
 if x has dimensions K, K components must be selected by \code{part}}
+
+\item{closure}{are probabilities Pi summing up to 1 (default TRUE)}
 }
 \description{
 Density function of specified gaussian mixture model.

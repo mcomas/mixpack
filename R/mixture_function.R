@@ -39,7 +39,7 @@ rmixnorm <- function(n, Pi, Mu, S, labels = F) {
     n_z <- sum(z == i)
     if (n_z != 0) {
       if (ncol(Mu) == 1) 
-        rmn[z == i, ] <- rnorm(n_z, mean = Mu[, i], sd = sqrt(S[, , i])) else rmn[z == i, ] <- mvtnorm::rmvnorm(n_z, mean = Mu[, i], sigma = S[, , i])
+        rmn[z == i, ] <- stats::rnorm(n_z, mean = Mu[, i], sd = sqrt(S[, , i])) else rmn[z == i, ] <- mvtnorm::rmvnorm(n_z, mean = Mu[, i], sigma = S[, , i])
     }
   }
   if (labels) 
@@ -61,12 +61,12 @@ rmixnorm <- function(n, Pi, Mu, S, labels = F) {
 #' mod1 = Mclust(iris[,1:4])
 #' rmixnorm_solution(10, mod1)
 rmixnorm_solution <- function(n, solution, ...) {
-  if ("MixmodCluster" %in% is(solution)) {
+  if ("MixmodCluster" %in% methods::is(solution)) {
     if (solution@dataType == "quantitative") {
       return(rmixnorm_rmixmod(n, solution, ...))
     }
   }
-  if ("Mclust" %in% is(solution)) {
+  if ("Mclust" %in% methods::is(solution)) {
     return(rmixnorm_mclust(n, solution, ...))
   }
   stop("Not recognized format for solution")
@@ -97,8 +97,9 @@ rmixnorm_rmixmod <- function(n, mixmod_solution, ...) {
 #' of each gaussian component
 #' @param part subcomposition where x shoud be evaluated. Take into an account that
 #' if x has dimensions K, K components must be selected by \code{part}
+#' @param closure are probabilities Pi summing up to 1 (default TRUE)
 #' @export
-dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = T) {
+dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = TRUE) {
   # z = sample(x=1:length(Pi), size=n, prob=Pi, replace=T) rmn = matrix(0, nrow=n, ncol=nrow(Mu))
   if (is.vector(x)) {
     dmn <- 0
@@ -107,7 +108,7 @@ dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = T) {
   }
   for (i in part) {
     if (ncol(Mu) == 1) 
-      dmn <- dmn + Pi[i] * dnorm(x, mean = Mu[, i], sd = sqrt(S[, , i])) else dmn <- dmn + Pi[i] * mvtnorm::dmvnorm(x, mean = Mu[, i], sigma = S[, , i])
+      dmn <- dmn + Pi[i] * stats::dnorm(x, mean = Mu[, i], sd = sqrt(S[, , i])) else dmn <- dmn + Pi[i] * mvtnorm::dmvnorm(x, mean = Mu[, i], sigma = S[, , i])
   }
   if(closure){
     dmn/sum(Pi[part])

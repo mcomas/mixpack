@@ -8,6 +8,8 @@ get_hierarchical_partition(post, omega, lambda, f_omega = NULL,
   f_lambda = NULL)
 }
 \arguments{
+\item{post}{dataframe of probabilities/weights (\code{tau} must be strictly positive)}
+
 \item{omega}{String giving the function name used to build the hierarchy. Available 
 functions are: entr, prop, dich}
 
@@ -22,8 +24,6 @@ probabities \code{v_tau} to class \code{a}}
 \item{f_lambda}{function with three parameters (\code{v_tau}, \code{a}, \code{b}).
 Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
 are classes to be combined.}
-
-\item{tau}{dataframe of probabilities/weights (\code{tau} must be strictly positive)}
 }
 \description{
 This function applies the methodology described in [citar article]
