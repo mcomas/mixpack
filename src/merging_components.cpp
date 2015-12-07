@@ -171,14 +171,17 @@ NumericMatrix mergingMatrix(int m, int a, int b){
   return(mergingM);
 }
 
-List _mergeStep_(NumericMatrix post, 
+arma::mat _merge_step_(NumericMatrix post, 
                double (*omega)(NumericVector, int, int), 
                double (*lambda)(NumericVector, int, int)){
-  List out(3);
-  NumericVector v = optimum(post, omega, lambda);
-  out[0] = mergingMatrix(post.cols(), v(0), v(1));
-  out[1] = mergeComponents(post, v(0), v(1));
-  return(out);
+  int k = post.cols();
+  arma::mat conf_matrix = arma::eye(k, k);
+  for(int i=0;i<k;i++){
+    for(int j=0;j<k;j++){
+      conf_matrix(i,j) = confusion(post, i, j, omega, lambda);
+    }
+  }
+  return(conf_matrix);
 }
 
 double (*get_omega(String omega))(NumericVector, int, int) {
@@ -212,16 +215,9 @@ double (*get_lambda(String lambda))(NumericVector, int, int) {
   return(flambda);
 }
 
-//' Merging components step
-//' 
-//' @param post Matrix with the posterior probabilities
-//' @param omega omega function name
-//' @param lambda lambda function name
-//' @return partition using prop and codaNorm
-//' @export
 // [[Rcpp::export]]
-List mergeStep(NumericMatrix post, String omega = "prop", String lambda = "coda"){
-  return( _mergeStep_(post, get_omega(omega), get_lambda(lambda)) );
+arma::mat merge_step_cpp(NumericMatrix post, String omega, String lambda){
+  return( _merge_step_(post, get_omega(omega), get_lambda(lambda)) );
 }
 
 

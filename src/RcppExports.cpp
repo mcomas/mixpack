@@ -149,16 +149,16 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// mergeStep
-List mergeStep(NumericMatrix post, String omega, String lambda);
-RcppExport SEXP mixpack_mergeStep(SEXP postSEXP, SEXP omegaSEXP, SEXP lambdaSEXP) {
+// merge_step_cpp
+arma::mat merge_step_cpp(NumericMatrix post, String omega, String lambda);
+RcppExport SEXP mixpack_merge_step_cpp(SEXP postSEXP, SEXP omegaSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< NumericMatrix >::type post(postSEXP);
     Rcpp::traits::input_parameter< String >::type omega(omegaSEXP);
     Rcpp::traits::input_parameter< String >::type lambda(lambdaSEXP);
-    __result = Rcpp::wrap(mergeStep(post, omega, lambda));
+    __result = Rcpp::wrap(merge_step_cpp(post, omega, lambda));
     return __result;
 END_RCPP
 }

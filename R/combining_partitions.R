@@ -48,7 +48,6 @@ get_hierarchical_partition <- function(post, omega, lambda, f_omega = NULL, f_la
   }
 }
 
-
 get_hierarchical_partition_cpp <- function(post, omega, lambda) {
   if(!omega %in% c('cnst', 'prop', 'dich')){
     stop(sprintf("Omega function %s is not available", omega))
@@ -64,8 +63,6 @@ get_hierarchical_partition_cpp <- function(post, omega, lambda) {
   }
   .Call('mixpack_get_hierarchical_partition_cpp', PACKAGE = 'mixpack', post, omega, lambda)
 }
-
-
 
 get_hierarchical_partition_generic <- function(tau, omega, lambda) {
   ctau <- tau
@@ -88,10 +85,76 @@ get_hierarchical_partition_generic <- function(tau, omega, lambda) {
     partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
     ctau <- ctau[, -part["a"]]
-
   }
   class(partitions) <- "hpartition"
   partitions
+}
+
+#' Merging components step
+#' 
+#' @param post Matrix with the posterior probabilities
+#' @param omega String giving the function name used to build the hierarchy. Available 
+#' functions are: entr, prop, dich
+#' 
+#' @param lambda String giving the function name used to build the hierarchy. Available 
+#' functions are: entr, demp, demp.mod, coda, coda.norm, prop
+#' 
+#' @param f_omega function with two parameters (\code{v_tau}, \code{a}). Parameter 
+#' \code{v_tau} is a vector of probabilities, parameter \code{a} is the a selected class.
+#' \code{omega}(\code{v_tau}, \code{a}) gives the representativeness of element with
+#' probabities \code{v_tau} to class \code{a}
+#' 
+#' @param f_lambda function with three parameters (\code{v_tau}, \code{a}, \code{b}).
+#' Parameter \code{v_tau} is a vector of probabilities, parameters \code{a} and \code{b}
+#' are classes to be combined.
+#' @return partition returns a matrix with all values for all possible mergings using functions `omega` and `lambda`
+#' @export
+merge_step = function(post, omega, lambda, f_omega = NULL, f_lambda = NULL){
+  if( !missing(omega) & !missing(lambda) ){
+    merge_step_cpp(post, omega, lambda)
+  }else{
+    if(is.null(f_omega) | is.null(f_lambda)){
+      stop("Either omega and lambda or f_omega and f_lambda need to be defined")
+    }
+    if(!is.function(f_omega) | !is.function(f_lambda)){
+      stop("Both f_omega and f_lambda needs to be a function")
+    }
+    if(length(formals(f_omega)) != 2){
+      stop("f_omega needs two parameters. Probability vector and one position")
+    }
+    if(length(formals(f_lambda)) != 3){
+      stop("f_lambda needs two parameters. Probability vector and two positions")
+    }
+    f_res = f_omega(c(0.5,0.5), 1)
+    if(!is.numeric(f_res) & length(f_res) == 1){
+      stop("f_omega needs to return a single number")
+    }
+    f_res = f_lambda(c(0.5,0.5), 1, 2)
+    if(!is.numeric(f_res) & length(f_res) == 1){
+      stop("f_lambda needs to return a single number")
+    }
+    merge_step_generic(post, f_omega, f_lambda)
+  }
+}
+
+merge_step_cpp <- function(post, omega, lambda) {
+  if(!omega %in% c('cnst', 'prop', 'dich')){
+    stop(sprintf("Omega function %s is not available", omega))
+  }
+  if(!lambda %in% c('entr', 'demp', 'demp.mod', 'coda', 'coda.norm', 'prop')){
+    stop(sprintf("Lambda function %s is not available", lambda))
+  }
+  if( (num <- sum(post == 0)) > 0){
+    if( lambda %in% c('coda', 'coda.norm')){
+      message(sprintf("%d zeros were replace by minimum machine number %e", num, .Machine$double.xmin))
+      post[post==0] = .Machine$double.xmin
+    }
+  }
+  .Call('mixpack_merge_step_cpp', PACKAGE = 'mixpack', post, omega, lambda)
+}
+
+merge_step_generic <- function(tau, omega, lambda) {
+  message("To be implenented")
 }
 
 #' Build a hierchical partition randomly from given K
@@ -116,6 +179,28 @@ get_random_hierarchical_partition <- function(K) {
   }
   class(partitions) <- "hpartition"
   partitions
+}
+
+#' Build a hierchical partition randomly from given K
+#' 
+#' This function return a hierachical partition contructed randonmly.
+#' 
+#' @param post posterior probability matrix
+#' @param a first component to merge
+#' @param b second component to merge
+#' @return a matrix of posterior probabilities where components a and b are merged
+#' 
+#' @export
+merge_components = function(post, a, b){
+  if(!(1 <= a & a <= NCOL(post))){
+    stop(sprintf('position a has to be lower or equal than %d', NCOL(post)))
+  }
+  if(!(1 <= b & b <= NCOL(post))){
+    stop(sprintf('position b has to be lower or equal than %d', NCOL(post)))
+  }
+  A = a - 1
+  B = b - 1
+  .Call('mixpack_mergeComponents', PACKAGE = 'mixpack', post, A, B)
 }
 
 part_name <- function(part) sprintf("(%s)", paste(sort(part), collapse = ","))

@@ -34,7 +34,7 @@ Mu = array(c(## Mu first component
              5, 5,
              ## Mu second component
              1, 1,
-             ## Mu thir component
+             ## Mu third component
              0, 0), dim = c(2,3))
 S = array(c(## Sigma first component
             1, 0,

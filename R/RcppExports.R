@@ -45,15 +45,8 @@ mergeComponents_mult <- function(post, a, b) {
     .Call('mixpack_mergeComponents_mult', PACKAGE = 'mixpack', post, a, b)
 }
 
-#' Merging components step
-#' 
-#' @param post Matrix with the posterior probabilities
-#' @param omega omega function name
-#' @param lambda lambda function name
-#' @return partition using prop and codaNorm
-#' @export
-mergeStep <- function(post, omega = "prop", lambda = "coda") {
-    .Call('mixpack_mergeStep', PACKAGE = 'mixpack', post, omega, lambda)
+merge_step_cpp <- function(post, omega, lambda) {
+    .Call('mixpack_merge_step_cpp', PACKAGE = 'mixpack', post, omega, lambda)
 }
 
 get_hierarchical_partition_cpp <- function(post, omega = "prop", lambda = "coda") {
