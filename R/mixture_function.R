@@ -132,12 +132,12 @@ dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = TRUE) {
 #' mod1 = Mclust(iris[,1:4])
 #' rmixnorm_solution(10, mod1)
 dmixnorm_solution <- function(x, solution, ...) {
-  if ("MixmodCluster" %in% is(solution)) {
+  if ("MixmodCluster" %in% methods::is(solution)) {
     if (solution@dataType == "quantitative") {
       return(dmixnorm_rmixmod(x, solution, ...))
     }
   }
-  if ("Mclust" %in% is(solution)) {
+  if ("Mclust" %in% methods::is(solution)) {
     return(dmixnorm_mclust(x, solution, ...))
   }
   stop("Not recognized format for solution")
@@ -160,12 +160,12 @@ dmixnorm_rmixmod <- function(x, mixmod_solution, ...) {
 }
 ## functions
 dmixnorm_solution_func <- function(solution, ...) {
-  if ("MixmodCluster" %in% is(solution)) {
+  if ("MixmodCluster" %in% methods::is(solution)) {
     if (solution@dataType == "quantitative") {
       return(function(x) dmixnorm_rmixmod(x, solution, ...))
     }
   }
-  if ("Mclust" %in% is(solution)) {
+  if ("Mclust" %in% methods::is(solution)) {
     return(function(x) dmixnorm_mclust(x, solution, ...))
   }
   stop("Not recognized format for solution")
