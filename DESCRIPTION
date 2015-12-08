@@ -24,5 +24,4 @@ Suggests:
 License: GPL
 LazyData: true
 NeedsCompilation: yes
-VignetteBuilder: knitr
 RoxygenNote: 5.0.1
