@@ -246,6 +246,7 @@ List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", S
     v = optimum( post_level, fomega, flambda );
     post_level = mergeComponents(post_level, v[0], v[1]);
     comb_level = comb_level * Rcpp::as<arma::mat>( mergingMatrix(lvl, v[0], v[1]) );
+    Rcpp::checkUserInterrupt();
   }
   
   std::vector<double> vec(0);
