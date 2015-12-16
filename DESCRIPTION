@@ -25,3 +25,4 @@ License: GPL
 LazyData: true
 NeedsCompilation: yes
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
