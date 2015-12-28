@@ -228,7 +228,7 @@ arma::mat merge_step_cpp(NumericMatrix post, String omega, String lambda){
 List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", String lambda = "coda"){
   int LEVEL = post.cols();
   List hp(LEVEL);
-  
+  List result(2);
   double (*flambda)(NumericVector, int, int) = get_lambda(lambda);
   double (*fomega)(NumericVector, int, int) = get_omega(omega);
   
@@ -261,8 +261,9 @@ List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", S
   List l_lvl(1);
   l_lvl(0) = wrap(vec);
   hp(0) = l_lvl;
-  hp(1) = values;
-  return(hp);
+  result(0) = hp;
+  result(1) = values;
+  return(result);
 }
 
 
