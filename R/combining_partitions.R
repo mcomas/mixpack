@@ -64,7 +64,7 @@ get_hierarchical_partition_cpp <- function(post, omega, lambda) {
   out = .Call('mixpack_get_hierarchical_partition_cpp', PACKAGE = 'mixpack', post, omega, lambda)
   partitions = out[[1]]
   values = out[[2]]
-  values[1] = NA
+  values[length(values)] = NA
   class(partitions) <- "hpartition"
   attr(partitions, 'S.value') <- values
   partitions
@@ -89,7 +89,7 @@ get_hierarchical_partition_generic <- function(tau, omega, lambda) {
     })
     to_merge <- which.max(values)
     part <- COMB[, to_merge]
-    value[k] = values[to_merge]
+    value[k-1] = values[to_merge]
     partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
     ctau <- ctau[, -part["a"]]
