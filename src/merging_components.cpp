@@ -80,12 +80,13 @@ double confusion(NumericMatrix post, int a, int b,
   return( numerator/denominator );
 }
 
-NumericVector optimum(NumericMatrix post, 
+List optimum(NumericMatrix post, 
                           double (*omega)(NumericVector, int, int), 
                           double (*lambda)(NumericVector, int, int)){
   int m = post.cols();
   double maximum = -std::numeric_limits<double>::max();
   int I = -1, J = -1;
+  List out(2);
   NumericVector res(2);
   for(int i=0;i<m; i++){
     for(int j=0;j<m;j++){
@@ -99,7 +100,9 @@ NumericVector optimum(NumericMatrix post,
   }
   res(0) = I;
   res(1) = J;
-  return(res);
+  out(0) = res;
+  out(1) = maximum;
+  return(out);
 }
 
 // [[Rcpp::export]]
@@ -231,8 +234,9 @@ List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", S
   
   arma::mat comb_level = arma::eye(LEVEL, LEVEL);
   NumericMatrix post_level = NumericMatrix(post);
-  
+  NumericVector values = NumericVector(LEVEL);
   NumericVector v;
+  List out;
   for(int lvl=LEVEL,l=0;1<lvl;lvl--,l++){
     List l_lvl(lvl);
     for(int j=0;j<lvl;j++){
@@ -243,7 +247,9 @@ List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", S
     int cur = LEVEL-l-1;
     hp(cur) = l_lvl;
     if(cur == 1) break;
-    v = optimum( post_level, fomega, flambda );
+    out = optimum( post_level, fomega, flambda );
+    v =  out(0);
+    values[cur] = out(1);
     post_level = mergeComponents(post_level, v[0], v[1]);
     comb_level = comb_level * Rcpp::as<arma::mat>( mergingMatrix(lvl, v[0], v[1]) );
     Rcpp::checkUserInterrupt();
@@ -254,6 +260,7 @@ List get_hierarchical_partition_cpp(NumericMatrix post, String omega = "prop", S
   List l_lvl(1);
   l_lvl(0) = wrap(vec);
   hp(0) = l_lvl;
+  hp(1) = values;
   return(hp);
 }
 
@@ -278,7 +285,8 @@ List get_hierarchical_partition_mult_fast(NumericMatrix post, String omega = "pr
     }
     hp(l) = l_lvl;
     
-    NumericVector v = optimum( post_level, fomega, flambda );
+    List opt = optimum( post_level, fomega, flambda );
+    NumericVector v = opt[0];
     
     post_level = mergeComponents_mult(post_level, v(0), v(1));
     comb_level *= Rcpp::as<arma::mat>( mergingMatrix(lvl, v(0), v(1)) );

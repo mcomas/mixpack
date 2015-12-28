@@ -61,7 +61,13 @@ get_hierarchical_partition_cpp <- function(post, omega, lambda) {
       post[post==0] = .Machine$double.xmin
     }
   }
-  .Call('mixpack_get_hierarchical_partition_cpp', PACKAGE = 'mixpack', post, omega, lambda)
+  out = .Call('mixpack_get_hierarchical_partition_cpp', PACKAGE = 'mixpack', post, omega, lambda)
+  partitions = out[[1]]
+  values = out[[2]]
+  values[1] = NA
+  class(partitions) <- "hpartition"
+  attr(partitions, 'S.value') <- values
+  partitions
 }
 
 get_hierarchical_partition_generic <- function(tau, omega, lambda) {
@@ -69,24 +75,27 @@ get_hierarchical_partition_generic <- function(tau, omega, lambda) {
   K <- ncol(ctau)
   partitions <- list()
   partitions[[K]] <- as.list(1:K)
-  names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
+  value = as.numeric(rep(NA, rep=K))
+  # names(partitions[[K]]) <- sapply(partitions[[K]], part_name)
   for (k in K:2) {
     COMB <- t(expand.grid(1:k, 1:k))
     COMB <- COMB[, COMB[1, ] != COMB[2, ]]
     rownames(COMB) <- c("a", "b")
-    colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
-    to_merge <- which.max(v <- apply(COMB, 2, function(ind) {
-      a <- ind[1]
-      b <- ind[2]
-      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b)))/sum(apply(ctau, 1, function(v_tau) omega(v_tau, 
-        a)))
-    }))
+    # colnames(COMB) <- col.names <- apply(COMB, 2, paste, collapse = "-")
+    values <- apply(COMB, 2, function(ind) {
+      a <- ind["a"]; b <- ind["b"]
+      sum(apply(ctau, 1, function(v_tau) omega(v_tau, a) * lambda(v_tau, a, b))) /
+        sum(apply(ctau, 1, function(v_tau) omega(v_tau, a)))
+    })
+    to_merge <- which.max(values)
     part <- COMB[, to_merge]
+    value[k] = values[to_merge]
     partitions[[k - 1]] <- b_absorbes_a(partitions[[k]], part["a"], part["b"])
     ctau[, part["b"]] <- ctau[, part["a"]] + ctau[, part["b"]]
     ctau <- ctau[, -part["a"]]
   }
   class(partitions) <- "hpartition"
+  attr(partitions, 'S.value') <- value
   partitions
 }
 
