@@ -13,9 +13,14 @@ The most standard parametric approach in cluster analysis assumes data can be mo
 
 We are going to work with the dataset ex4.1 used in Baudry et el. (2010) and available in package `mclust`. To fit a finite mixture of gaussian distributions we are going to use the same package. 
 
-```{r}
-library(ggplot2)
+```{r, message=FALSE}
 library(mclust)
+library(mixpack)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r, fig.width=5, fig.height=4, fig.align='center'}
 data(Baudry_etal_2010_JCGS_examples)
 qplot(data=ex4.1, X1, X2)
 ```
@@ -29,28 +34,20 @@ m <- Mclust(ex4.1)
 summary(m)
 ```
 
-
+Using the function `dmixnorm_solution` we can evaluate the probability density function and calculate the posterior probabilities
 
 ```{r}
-library(mixpack)
-library(dplyr)
-
-dens = dmixnorm_solution(ex4.1, solution = m)
+dens.mixt = dmixnorm_solution(ex4.1, solution = m)
 (df <- lapply(1:6, function(i) 
   (m$parameters$pro[i] * dmixnorm_solution(ex4.1, solution = m, part=i)) %>%
-    data.frame %>% {./dens} %>%
-    setNames(sprintf('p%02d', i)) ) %>% bind_cols)
+    data.frame %>% {./dens.mixt} %>%
+    setNames(sprintf('p%02d', i)) ) %>% bind_cols) %>% tbl_df
 ```
 
 The posterior probabilities are also available in the object returned by function `Mclust`.
 
 ```{r}
-m$z %>% head
-```
-
-
-```{r}
-table(apply(df, 1, which.max), m$classification)
+m$z %>% tbl_df
 ```
 
 ```{r}
@@ -60,14 +57,14 @@ cm0 = expand.grid(X1 = xlimits, X2 = ylimits) %>% tbl_df %>%
   mutate(z = dmixnorm_solution(., solution=m))
 ```
 
-```{r}
+```{r, fig.width=5, fig.height=4, fig.align='center'}
 ggplot() + 
   geom_point(data=ex4.1, aes(x=X1, y=X2),alpha=0.2) + 
   stat_contour(data = cm0, aes(x=X1, y=X2, z=z))
 ```
 
 
-```{r}
+```{r, fig.width=5, fig.height=4, fig.align='center'}
 partition = list(1,2,3,4,5,6)
 CN6 = lapply(partition, function(part){
   expand.grid(X1 = xlimits, X2 = ylimits) %>%
@@ -83,7 +80,7 @@ ggplot() +
 
 ## Using a specific partition
 
-```{r}
+```{r, fig.width=5, fig.height=4, fig.align='center'}
 partition = list(c(1,6,2),c(3,4),5)
 CN6 = lapply(partition, function(part){
   expand.grid(X1 = xlimits, X2 = ylimits) %>%

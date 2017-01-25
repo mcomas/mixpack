@@ -1,7 +1,7 @@
 Package: mixpack
 Encoding: UTF-8
 Title: Tools to Work with Mixture Components
-Version: 0.3.5
+Version: 0.3.6
 Date: 2015-12-06
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"),
@@ -20,7 +20,9 @@ LinkingTo: Rcpp, RcppArmadillo
 Suggests:
     mclust,
     Rmixmod,
-    knitr
+    knitr,
+    dplyr,
+    ggplot2
 License: GPL
 LazyData: true
 NeedsCompilation: yes

@@ -107,8 +107,11 @@ dmixnorm <- function(x, Pi, Mu, S, part = 1:length(Pi), closure = TRUE) {
     dmn <- rep(0, times = nrow(x))
   }
   for (i in part) {
-    if (ncol(Mu) == 1) 
-      dmn <- dmn + Pi[i] * stats::dnorm(x, mean = Mu[, i], sd = sqrt(S[, , i])) else dmn <- dmn + Pi[i] * mvtnorm::dmvnorm(x, mean = Mu[, i], sigma = S[, , i])
+    if (ncol(Mu) == 1){
+      dmn <- dmn + Pi[i] * stats::dnorm(x, mean = Mu[, i], sd = sqrt(S[, , i]))
+    }else{
+      dmn <- dmn + Pi[i] * mvtnorm::dmvnorm(x, mean = Mu[, i], sigma = S[, , i])
+    }
   }
   if(closure){
     dmn/sum(Pi[part])
