@@ -2,7 +2,7 @@ Package: mixpack
 Encoding: UTF-8
 Title: Tools to Work with Mixture Components
 Version: 0.3.6
-Date: 2015-12-06
+Date: 2015-01-26
 Authors@R: c(person("Marc", "Comas-Cufí", role = c("aut", "cre"), 
                     email = "mcomas@imae.udg.edu"),
              person("Josep Antoni", "Martín-Fernández", role = "aut"),
